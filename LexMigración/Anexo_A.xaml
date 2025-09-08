@@ -1,0 +1,89 @@
+﻿<Window x:Class="LexMigración.Anexo_A"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LexMigración"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Anexo_A" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Formulario de ingreso de anexo -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,0">
+            <TextBlock Text="Formulario de Anexo" FontSize="18" FontWeight="Bold" Margin="0 0 0 10"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Expediente:" Width="100" VerticalAlignment="Center"/>
+                <ComboBox Name="CbExpediente" Width="200" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Foliado Inicio:" Width="100" VerticalAlignment="Center"/>
+                <TextBox Name="TxtFoliadoInicio" Width="200"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Foliado Fin:" Width="100" VerticalAlignment="Center"/>
+                <TextBox Name="TxtFoliadoFin" Width="200"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Total Hojas:" Width="100" VerticalAlignment="Center"/>
+                <TextBox Name="TxtTotalHojas" Width="200"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Estado:" Width="100" VerticalAlignment="Center"/>
+                <ComboBox Name="CbEstado" Width="200">
+                    <ComboBoxItem Content="listo" />
+                    <ComboBoxItem Content="faltante" />
+                    <ComboBoxItem Content="observado" />
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Fecha creación:" Width="100" VerticalAlignment="Center"/>
+                <DatePicker Name="DpFechaCreacion" Width="200" SelectedDate="{x:Static sys:DateTime.Today}"/>
+            </StackPanel>
+
+            <Button Name="BtnAgregarDocumento" Content="Agregar Documento" Width="150" Margin="0,10,0,0" Click="BtnAgregarDocumento_Click"/>
+        </StackPanel>
+
+        <!-- DataGrid lista de anexos -->
+        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="3">
+            <TextBlock Text="Lista de Anexos" FontSize="18" FontWeight="Bold" Margin="0 0 0 10"/>
+            <DataGrid Name="DgAnexos" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgAnexos_SelectionChanged" Height="400">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
+                    <DataGridTextColumn Header="Foliado Inicio" Binding="{Binding FoliadoInicio}" Width="*"/>
+                    <DataGridTextColumn Header="Foliado Fin" Binding="{Binding FoliadoFin}" Width="*"/>
+                    <DataGridTextColumn Header="Total Hojas" Binding="{Binding TotalHojas}" Width="*"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="*"/>
+                    <DataGridTextColumn Header="Fecha Creación" Binding="{Binding CreatedAt, StringFormat=d}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <!-- Botones de acción -->
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0" >
+            <Button Name="BtnGuardar" Content="Guardar" Width="100" Click="BtnGuardar_Click" Margin="0,0,10,0"/>
+            <Button Name="BtnActualizar" Content="Actualizar" Width="100" Click="BtnActualizar_Click"/>
+        </StackPanel>
+
+        <!-- Mensaje estado -->
+        <TextBlock Name="TxtMensaje" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Foreground="Red" FontWeight="Bold"/>
+    </Grid>
+</Window>
+

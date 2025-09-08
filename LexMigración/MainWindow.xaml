@@ -1,0 +1,67 @@
+﻿<Window x:Class="LexMigracion.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LexMigración - Ventana Principal"
+        Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        WindowStyle="None"
+        Background="White">
+
+    <Border BorderBrush="#CCC" BorderThickness="1" CornerRadius="8" Padding="0" Background="#F9F9F9">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#2C3E50" MouseDown="MainWindow_MouseDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="LexMigración" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" FontSize="15"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                    <Button Content="&#x2015;" Width="35" Height="30" Margin="3,0" FontSize="14" Background="Transparent" Foreground="White" BorderThickness="0" Click="MinimizeWindow_Click" ToolTip="Minimizar"/>
+                    <Button Content="&#x25A1;" Width="35" Height="30" Margin="3,0" FontSize="12" Background="Transparent" Foreground="White" BorderThickness="0" Click="MaximizeRestoreWindow_Click" ToolTip="Maximizar/Restaurar"/>
+                    <Button Content="&#x2715;" Width="35" Height="30" Margin="3,0" FontSize="12" Background="Transparent" Foreground="White" BorderThickness="0" Click="CloseWindow_Click" ToolTip="Cerrar"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Background="#34495E">
+                <Button x:Name="BtnAnexos" Height="50" Margin="5" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe UI Symbol" Text="📄" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Anexos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnProtocolos" Height="50" Margin="5" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe UI Symbol" Text="📑" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Protocolos" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnIndice" Height="50" Margin="5" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe UI Symbol" Text="📋" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Índice" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnMigraciones" Height="50" Margin="5" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe UI Symbol" Text="🔄" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Migraciones" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <ContentControl x:Name="MainContent" Grid.Row="1" Grid.Column="1" Margin="15" Background="White" />
+        </Grid>
+    </Border>
+</Window>
