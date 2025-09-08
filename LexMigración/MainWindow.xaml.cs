@@ -13,20 +13,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-
+using LexMigración.Services; // <-- CAMBIO: Se agrega el "using" para el servicio
 
 namespace LexMigracion
 {
     /// <summary>
     /// Lógica de interacción para MainWindow.xaml
     /// </summary>
-
-    // CORRECCIÓN CLAVE: La clase debe ser 'public partial' y heredar de 'Window'
     public partial class MainWindow : Window
     {
-        // El resto de tu código está funcionalmente bien para tu lógica.
-        // No necesita cambios.
+        // CAMBIO: Se agrega la variable para el servicio de base de datos
+        private DatabaseService _dbService;
 
         // Variables para controlar las ventanas abiertas
         private Anexo_A anexoWindow;
@@ -36,13 +33,9 @@ namespace LexMigracion
 
         public MainWindow()
         {
-            InitializeComponent(); // Esto ya no dará error.
+            InitializeComponent();
+            _dbService = new DatabaseService(); // <-- CAMBIO: Se inicializa el servicio aquí para crear la BD
             InitializeButtons();
-
-            // Hacer la ventana arrastrable desde la barra superior
-            // El evento ya está asignado en el XAML con MouseDown="MainWindow_MouseDown"
-            // por lo que esta línea se puede eliminar para evitar duplicidad.
-            // this.MouseDown += MainWindow_MouseDown; 
         }
 
         private void InitializeButtons()

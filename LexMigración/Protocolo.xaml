@@ -5,46 +5,97 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexMigración"
         mc:Ignorable="d"
-        Title="Protocolo" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        Title="Gestión de Protocolos" Height="500" Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+        <Style x:Key="BaseTextBoxStyle" TargetType="{x:Type Control}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#555555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
 
-        <!-- DataGrid con lista de protocolos -->
-        <DataGrid Name="DgProtocolos" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgProtocolos_SelectionChanged" Margin="0,0,10,0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
-                <DataGridTextColumn Header="Número Escritura" Binding="{Binding NumeroEscritura}" Width="*"/>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=d}" Width="*"/>
-                <DataGridCheckBoxColumn Header="Firmado" Binding="{Binding Firmado}" Width="Auto"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+            <TextBlock Text="Protocolos Registrados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+            <DataGrid Name="DgProtocolos" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgProtocolos_SelectionChanged"
+                      CanUserAddRows="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD" 
+                      AlternatingRowBackground="#FAFAFA" RowBackground="White" BorderBrush="#CCC">
 
-        <!-- Formulario edición rápida -->
-        <StackPanel Grid.Row="0" Grid.Column="1">
-            <TextBlock Text="Detalles del Protocolo" FontSize="18" FontWeight="Bold" Margin="0 0 0 10"/>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#333"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
 
-            <TextBlock Text="Extracto:"/>
-            <TextBox Name="TxtExtracto" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
+                    <DataGridTextColumn Header="No. Escritura" Binding="{Binding NumeroEscritura}" Width="*"/>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=d}" Width="*"/>
+                    <DataGridCheckBoxColumn Header="Firmado" Binding="{Binding Firmado}" Width="Auto"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
 
-            <TextBlock Text="Texto Completo:" Margin="0,10,0,0"/>
-            <TextBox Name="TxtTextoCompleto" Height="120" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
 
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
-                <CheckBox Name="ChkFirmado" Content="Firmado"/>
+                <Label Content="Extracto del Documento"/>
+                <TextBox Name="TxtExtracto" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <Label Content="Texto Completo"/>
+                <TextBox Name="TxtTextoCompleto" Height="150" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <CheckBox Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
+
+                <Button Name="BtnGuardarProtocolo" Content="Guardar Cambios" Style="{StaticResource PrimaryButtonStyle}" Width="150" HorizontalAlignment="Left"/>
+
             </StackPanel>
-        </StackPanel>
-
-        <!-- Botones y mensajes -->
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
-            <Button Name="BtnMigrarAnexo" Content="Migrar Anexo → Protocolo" Width="180" Click="BtnMigrarAnexo_Click" Margin="0,0,10,0"/>
-            <TextBlock Name="TxtMensaje" VerticalAlignment="Center" Foreground="Green" FontWeight="Bold"/>
-        </StackPanel>
+        </Border>
     </Grid>
 </Window>

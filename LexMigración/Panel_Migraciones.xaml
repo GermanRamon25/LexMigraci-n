@@ -5,28 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LexMigración"
         mc:Ignorable="d"
-        Title="Panel_Migraciones" Height="450" Width="800">
-    <Grid Margin="10">
+        Title="Panel de Migraciones" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="MigrationButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,20,0"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#555555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Botones para migrar -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Button Name="BtnMigrarAnexoProtocolo" Content="Migrar Anexo → Protocolo" Width="180" Margin="0,0,10,0" Click="BtnMigrarAnexoProtocolo_Click"/>
-            <Button Name="BtnMigrarProtocoloIndice" Content="Migrar Protocolo → Índice" Width="180" Click="BtnMigrarProtocoloIndice_Click"/>
-        </StackPanel>
+        <TextBlock Grid.Row="0" Text="🔄 Panel de Migración de Datos" FontSize="24" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
 
-        <!-- Lista Log / Historial -->
-        <GroupBox Header="Log de Migraciones" Grid.Row="1" Margin="0,10,0,10">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ListBox Name="LstLogMigraciones" />
-            </ScrollViewer>
+        <Border Grid.Row="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="BtnMigrarAnexoProtocolo" Content="Migrar Anexo → Protocolo" Style="{StaticResource MigrationButtonStyle}" Click="BtnMigrarAnexoProtocolo_Click"/>
+                <Button Name="BtnMigrarProtocoloIndice" Content="Migrar Protocolo → Índice" Style="{StaticResource MigrationButtonStyle}" Click="BtnMigrarProtocoloIndice_Click"/>
+            </StackPanel>
+        </Border>
+
+        <GroupBox Grid.Row="2" Header="Log de Migraciones" FontWeight="SemiBold" Foreground="#555" BorderBrush="#DDD">
+            <ListBox Name="LstLogMigraciones" Background="White" BorderThickness="0"/>
         </GroupBox>
 
-        <!-- Barra de progreso -->
-        <ProgressBar Name="ProgressBarMigracion" Grid.Row="2" Height="25" Minimum="0" Maximum="100" Value="0" Visibility="Collapsed"/>
+        <ProgressBar Grid.Row="3" Name="ProgressBarMigracion" Height="10" Margin="0,15,0,0" Value="0" Visibility="Collapsed"/>
     </Grid>
 </Window>

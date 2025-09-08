@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LexMigracion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using System.Windows.Controls; // Necesario para ComboBoxItem
 
 namespace LexMigración
 {
@@ -26,21 +27,30 @@ namespace LexMigración
         {
             string usuario = TxtUsuario.Text.Trim();
             string contra = PwdContra.Password;
+            string rol = (CmbRol.SelectedItem as ComboBoxItem)?.Content.ToString();
 
-            // Usuarios permitidos: 3 secretarias y 1 jefe
+            // Validar que se haya seleccionado un rol
+            if (string.IsNullOrEmpty(rol))
+            {
+                TxtMensaje.Text = "Por favor, selecciona un rol.";
+                return;
+            }
+
+            // CAMBIO: Ahora los usuarios también tienen un rol asociado
             var usuariosValidos = new[]
             {
-                new { Usuario = "secretaria1", Contrasena = "1234" },
-                new { Usuario = "secretaria2", Contrasena = "1234" },
-                new { Usuario = "secretaria3", Contrasena = "1234" },
-                new { Usuario = "jefe", Contrasena = "abcd" }
+                new { Usuario = "secretaria1", Contrasena = "123", Rol = "Secretaria" },
+                new { Usuario = "secretaria2", Contrasena = "1234", Rol = "Secretaria" },
+                new { Usuario = "secretaria3", Contrasena = "1235", Rol = "Secretaria" },
+                new { Usuario = "Sergio", Contrasena = "123456", Rol = "Lic.Sergio" }
             };
 
             bool esUsuarioValido = false;
 
             foreach (var user in usuariosValidos)
             {
-                if (user.Usuario == usuario && user.Contrasena == contra)
+                // CAMBIO: La validación ahora incluye el rol
+                if (user.Usuario == usuario && user.Contrasena == contra && user.Rol == rol)
                 {
                     esUsuarioValido = true;
                     break;
@@ -49,18 +59,14 @@ namespace LexMigración
 
             if (esUsuarioValido)
             {
-                TxtMensaje.Foreground = System.Windows.Media.Brushes.LightGreen;
-                TxtMensaje.Text = $"Bienvenido {usuario}!";
-                // Aquí puedes abrir la ventana principal o la que corresponda
-                // Por ejemplo:
-                // MainWindow main = new MainWindow();
-                // main.Show();
-                // this.Close();
+                MainWindow main = new MainWindow();
+                main.Show();
+                this.Close();
             }
             else
             {
                 TxtMensaje.Foreground = System.Windows.Media.Brushes.LightCoral;
-                TxtMensaje.Text = "Usuario o contraseña incorrectos.";
+                TxtMensaje.Text = "Usuario, contraseña o rol incorrectos.";
             }
         }
     }
