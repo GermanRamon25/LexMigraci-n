@@ -3,148 +3,90 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LexMigración"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Gestión de Anexos" Height="550" Width="900"
+        Title="Gestión de Anexos y Expedientes" Height="700" Width="1200"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
-    <Window.Resources>
-        <Style TargetType="Label">
-            <Setter Property="Foreground" Value="#555"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-        <Style x:Key="BaseTextBoxStyle" TargetType="{x:Type Control}">
-            <Setter Property="Height" Value="35"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#CCC"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="#333"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
-        <Style TargetType="ComboBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
-        <Style TargetType="DatePicker" BasedOn="{StaticResource BaseTextBoxStyle}"/>
-
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="35"/>
-            <Setter Property="Width" Value="120"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0,0,10,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#555555"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#E0E0E0"/>
-            <Setter Property="Foreground" Value="#333"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#D0D0D0"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
-
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="600"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="📄 Registro de Anexo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+        <Grid Grid.Column="0" Margin="0,0,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Label Content="Expediente Asociado"/>
-                <ComboBox Name="CbExpediente" Margin="0,0,0,15"/>
+            <Border Grid.Row="0" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="📄 Registro de Anexo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <Label Content="Expediente Asociado"/>
+                            <ComboBox Name="CbExpediente"/>
+                            <Label Content="Estado del Anexo" Margin="0,15,0,0"/>
+                            <ComboBox Name="CbEstado">
+                                <ComboBoxItem Content="Listo"/>
+                                <ComboBoxItem Content="Faltante"/>
+                                <ComboBoxItem Content="Observado"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <Label Content="Documento Adjunto"/>
+                            <Button Name="BtnAgregarDocumento" Style="{StaticResource SecondaryButtonStyle}" Click="BtnAgregarDocumento_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="Segoe UI Symbol" Text="📁" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Seleccionar Archivo..." VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Name="TxtNombreArchivo" Margin="0,8,0,0" FontStyle="Italic" Foreground="DarkBlue" TextWrapping="Wrap" Text="Ningún archivo seleccionado."/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
 
-                <Grid Margin="0,0,0,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
-                        <Label Content="Foliado Inicio"/>
-                        <TextBox Name="TxtFoliadoInicio"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                        <Label Content="Foliado Fin"/>
-                        <TextBox Name="TxtFoliadoFin"/>
-                    </StackPanel>
-                </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Anexos Guardados" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
+                <DataGrid Grid.Row="1" Name="DgAnexos" AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="DgAnexos_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                        <DataGridTextColumn Header="Archivo Adjunto" Binding="{Binding NombreArchivo}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0" >
+                    <Button Name="BtnGuardar" Content="Guardar Nuevo Anexo" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
-                <Label Content="Total de Hojas"/>
-                <TextBox Name="TxtTotalHojas" Margin="0,0,0,15"/>
+        <DockPanel Grid.Column="1" LastChildFill="True">
 
-                <Label Content="Estado del Anexo"/>
-                <ComboBox Name="CbEstado" Margin="0,0,0,15">
-                    <ComboBoxItem Content="Listo"/>
-                    <ComboBoxItem Content="Faltante"/>
-                    <ComboBoxItem Content="Observado"/>
-                </ComboBox>
+            <TextBlock DockPanel.Dock="Top" Text="📝 Editor de Contenido del Expediente" 
+                       FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
 
-                <Label Content="Fecha de Creación"/>
-                <DatePicker Name="DpFechaCreacion" SelectedDate="{x:Static sys:DateTime.Today}" Margin="0,0,0,20"/>
+            <Button DockPanel.Dock="Bottom" Name="BtnActualizarContenido" Content="Guardar Cambios del Texto" 
+                    Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" HorizontalAlignment="Right" 
+                    Click="BtnActualizarContenido_Click"/>
 
-                <Button Name="BtnAgregarDocumento" Content="Adjuntar Archivo" Style="{StaticResource SecondaryButtonStyle}" Width="150" HorizontalAlignment="Left" Click="BtnAgregarDocumento_Click"/>
-            </StackPanel>
-        </Border>
+            <TextBox Name="TxtEditorContenido" 
+                     AcceptsReturn="True" TextWrapping="Wrap" 
+                     VerticalScrollBarVisibility="Auto" 
+                     BorderBrush="#CCC" BorderThickness="1" Padding="5"
+                     FontFamily="Consolas" FontSize="14" Height="504"/>
 
-        <StackPanel Grid.Column="1" Margin="20,0,0,0">
-            <TextBlock Text="Anexos Guardados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
-            <DataGrid Name="DgAnexos" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgAnexos_SelectionChanged" 
-                      CanUserAddRows="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD" 
-                      AlternatingRowBackground="#FAFAFA" RowBackground="White" BorderBrush="#CCC">
-
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="#333"/>
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
-                        <Setter Property="Padding" Value="10,5"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
-                    <DataGridTextColumn Header="Inicio" Binding="{Binding FoliadoInicio}" Width="Auto"/>
-                    <DataGridTextColumn Header="Fin" Binding="{Binding FoliadoFin}" Width="Auto"/>
-                    <DataGridTextColumn Header="Hojas" Binding="{Binding TotalHojas}" Width="Auto"/>
-                    <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="*"/>
-                    <DataGridTextColumn Header="Fecha Creación" Binding="{Binding CreatedAt, StringFormat=d}" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,20,0,0" >
-                <Button Name="BtnGuardar" Content="Guardar" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
-                <Button Name="BtnActualizar" Content="Actualizar" Style="{StaticResource SecondaryButtonStyle}" Click="BtnActualizar_Click"/>
-            </StackPanel>
-
-            <TextBlock Name="TxtMensaje" VerticalAlignment="Center" Foreground="Crimson" FontWeight="Bold" Margin="0,15,0,0"/>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

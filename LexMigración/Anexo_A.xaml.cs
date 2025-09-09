@@ -1,84 +1,134 @@
-﻿// Importación de librerías necesarias para trabajar con ventanas WPF, controles, diálogos de archivos, etc.
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using LexMigración.Models;
+using LexMigración.Services;
 
 namespace LexMigración
 {
-    // Definición de la ventana Anexo_A, que hereda de Window (ventana estándar WPF)
     public partial class Anexo_A : Window
     {
-        // Constructor del formulario - inicializa los componentes visuales definidos en XAML
+        private readonly DatabaseService _dbService;
+        private string _nombreArchivoSeleccionado;
+        private string _contenidoArchivoSeleccionado;
+
         public Anexo_A()
         {
             InitializeComponent();
+            _dbService = new DatabaseService();
+            CargarAnexos();
         }
-        
-        // Evento disparado al hacer clic en el botón Agregar Documento
-        private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
+
+        private void CargarAnexos()
         {
-            // Crear diálogo para seleccionar archivos
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Title = "Selecciona documentos"; // Título del diálogo
-            dlg.Filter = "Archivos PDF|*.pdf|Todos los archivos|*.*"; // Filtrado de archivos (PDF o todos)
-            dlg.Multiselect = true; // Permitir seleccionar múltiples archivos
-            
-            // Mostrar el diálogo y verificar si el usuario seleccionó archivos
-            if (dlg.ShowDialog() == true)
+            try
             {
-                // Mostrar mensaje con la cantidad de archivos seleccionados
-                MessageBox.Show($"Seleccionaste {dlg.FileNames.Length} archivos.");
-                
-                // Aquí se podría agregar la lógica para manejar o almacenar los archivos seleccionados
+                DgAnexos.ItemsSource = _dbService.ObtenerAnexos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar los anexos: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
-        // Evento que se ejecuta cuando cambia la selección en el DataGrid DgAnexos
-        private void DgAnexos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void LimpiarFormulario()
         {
-            // Si no hay ningún ítem seleccionado, salir del método
-            if (DgAnexos.SelectedItem == null)
-                return;
-            
-            // Obtener el ítem seleccionado de forma dinámica (sin tipo específico)
-            dynamic anexo = DgAnexos.SelectedItem;
-            
-            // Actualizar controles de la interfaz con los datos del anexo seleccionado
-            CbExpediente.SelectedValue = anexo.ExpedienteId;
-            TxtFoliadoInicio.Text = anexo.FoliadoInicio.ToString();
-            TxtFoliadoFin.Text = anexo.FoliadoFin.ToString();
-            TxtTotalHojas.Text = anexo.TotalHojas.ToString();
-            CbEstado.Text = anexo.Estado;
-            DpFechaCreacion.SelectedDate = anexo.CreatedAt;
+            CbExpediente.SelectedIndex = -1;
+            CbEstado.SelectedIndex = -1;
+            TxtNombreArchivo.Text = "Ningún archivo seleccionado.";
+            TxtEditorContenido.Clear();
+            _nombreArchivoSeleccionado = null;
+            _contenidoArchivoSeleccionado = null;
+            DgAnexos.SelectedItem = null;
         }
-        
-        // Evento disparado al hacer clic en el botón Guardar
+
+        private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Title = "Selecciona un documento de texto";
+            // --- CAMBIO IMPORTANTE: Priorizamos archivos .txt ---
+            dlg.Filter = "Archivos de Texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*";
+
+            if (dlg.ShowDialog() == true)
+            {
+                try
+                {
+                    _nombreArchivoSeleccionado = Path.GetFileName(dlg.FileName);
+                    // Esta función solo funciona bien con texto plano
+                    _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
+
+                    TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
+                    TxtEditorContenido.Text = _contenidoArchivoSeleccionado;
+                }
+                catch (Exception ex)
+                {
+                    // Mensaje de error si el archivo no es de texto
+                    MessageBox.Show("El archivo seleccionado no parece ser un archivo de texto plano. Por favor, elige un archivo .txt.", "Error de Formato", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void DgAnexos_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (DgAnexos.SelectedItem is Anexo anexo)
+            {
+                CbExpediente.Text = anexo.ExpedienteId;
+                CbEstado.Text = anexo.Estado;
+                TxtNombreArchivo.Text = anexo.NombreArchivo ?? "Ningún archivo asociado.";
+                TxtEditorContenido.Text = anexo.ContenidoArchivo;
+            }
+            else
+            {
+                TxtEditorContenido.Clear();
+            }
+        }
+
         private void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            // Mensaje temporal indicando que aquí se debe implementar la lógica para guardar un anexo
-            MessageBox.Show("Guardar anexo - Implementar lógica aquí");
-            
-            // Aquí se debe implementar la funcionalidad para guardar los datos capturados en la base de datos
+            try
+            {
+                var nuevoAnexo = new Anexo
+                {
+                    ExpedienteId = CbExpediente.Text ?? "EXP-NUEVO",
+                    Estado = (CbEstado.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Content.ToString() ?? "Listo",
+                    NombreArchivo = _nombreArchivoSeleccionado,
+                    ContenidoArchivo = _contenidoArchivoSeleccionado,
+                    CreatedAt = DateTime.Today
+                };
+
+                _dbService.GuardarAnexo(nuevoAnexo);
+                MessageBox.Show("Anexo guardado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                CargarAnexos();
+                LimpiarFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar el anexo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        
-        // Evento disparado al hacer clic en el botón Actualizar
-        private void BtnActualizar_Click(object sender, RoutedEventArgs e)
+
+        private void BtnActualizarContenido_Click(object sender, RoutedEventArgs e)
         {
-            // Mensaje temporal indicando que aquí se debe implementar la lógica para actualizar un anexo existente
-            MessageBox.Show("Actualizar anexo - Implementar lógica aquí");
-            
-            // Aquí se debe implementar la funcionalidad para actualizar los datos del anexo en la base de datos
+            if (DgAnexos.SelectedItem is Anexo anexoSeleccionado)
+            {
+                try
+                {
+                    anexoSeleccionado.ContenidoArchivo = TxtEditorContenido.Text;
+                    _dbService.ActualizarAnexo(anexoSeleccionado);
+                    MessageBox.Show("Contenido actualizado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CargarAnexos();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al actualizar el contenido: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un anexo de la tabla para actualizar su contenido.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

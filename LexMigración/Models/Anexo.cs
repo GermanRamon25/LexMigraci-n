@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LexMigración.Models
 {
@@ -15,5 +11,9 @@ namespace LexMigración.Models
         public int TotalHojas { get; set; }
         public string Estado { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string NombreArchivo { get; set; }
+
+        // --- NUEVA PROPIEDAD PARA GUARDAR EL CONTENIDO ---
+        public string ContenidoArchivo { get; set; }
     }
 }
