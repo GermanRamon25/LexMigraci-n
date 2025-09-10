@@ -235,11 +235,15 @@
     </Compile>
     <Compile Include="Models\Anexo.cs" />
     <Compile Include="Models\Protocolo.cs" />
+    <Compile Include="Models\Usuario.cs" />
     <Compile Include="Panel_Migraciones.xaml.cs">
       <DependentUpon>Panel_Migraciones.xaml</DependentUpon>
     </Compile>
     <Compile Include="Protocolo.xaml.cs">
       <DependentUpon>Protocolo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RegistroWindow.xaml.cs">
+      <DependentUpon>RegistroWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\LexMigracionContext.cs" />
@@ -275,6 +279,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Protocolo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RegistroWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

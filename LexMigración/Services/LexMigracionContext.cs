@@ -5,20 +5,28 @@ namespace LexMigración.Services
 {
     public class LexMigracionContext : DbContext
     {
+        // --- DbSet para cada Tabla ---
+        // Cada una de estas propiedades representa una tabla en tu base de datos
+        // y la conecta con su clase modelo correspondiente en C#.
         public DbSet<Anexo> Anexos { get; set; }
         public DbSet<ProtocoloModel> Protocolos { get; set; }
         public DbSet<RegistroIndice> Indices { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
+        /// <summary>
+        /// Este método configura la conexión a la base de datos.
+        /// </summary>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // --- CAMBIO IMPORTANTE ---
-            // Hemos reemplazado UseSqlite por UseSqlServer
-            // y hemos puesto una nueva cadena de conexión.
+            // --- Cadena de Conexión a SQL Server ---
+            // Aquí se define cómo se conectará la aplicación a tu servidor.
 
-            // Reemplaza "NOMBRE_DE_TU_SERVIDOR" por el nombre de tu instancia de SQL Server.
-            // Puede ser algo como "LAPTOP-12345" o ".\SQLEXPRESS".
+            // IMPORTANTE: Reemplaza "NOMBRE_DE_TU_SERVIDOR" con el nombre de tu
+            // instancia de SQL Server (ej: "MI-PC\SQLEXPRESS" o "localhost").
             string connectionString = "Server=GERMAN25\\SQLEXPRESS;Database=LexMigracionDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
+            // Le indicamos a Entity Framework que use el proveedor de SQL Server
+            // con la cadena de conexión que definimos.
             optionsBuilder.UseSqlServer(connectionString);
         }
     }

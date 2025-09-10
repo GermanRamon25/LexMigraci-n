@@ -1,53 +1,42 @@
 ﻿using LexMigración;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LexMigración.Services; // <-- CAMBIO: Se agrega el "using" para el servicio
+using LexMigración.Services;
+using System.Windows.Controls;
+using System;
+using System.Linq;
 
-namespace LexMigracion
+// --- LÍNEA CORREGIDA ---
+// Asegúrate de que el namespace tenga la tilde, igual que en tus otros archivos.
+namespace LexMigración
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        // CAMBIO: Se agrega la variable para el servicio de base de datos
         private DatabaseService _dbService;
-
-        // Variables para controlar las ventanas abiertas
         private Anexo_A anexoWindow;
         private Protocolo protocoloWindow;
         private Indice indiceWindow;
         private Panel_Migraciones migracionesWindow;
 
-        public MainWindow()
+        public MainWindow(string nombreUsuario)
         {
             InitializeComponent();
-            _dbService = new DatabaseService(); // <-- CAMBIO: Se inicializa el servicio aquí para crear la BD
+            _dbService = new DatabaseService();
             InitializeButtons();
+
+            // Esto ahora funcionará porque el namespace es correcto
+            TxtUsuarioLogeado.Text = nombreUsuario;
         }
 
         private void InitializeButtons()
         {
-            // Agregar event handlers a los botones
             BtnAnexos.Click += BtnAnexos_Click;
             BtnProtocolos.Click += BtnProtocolos_Click;
             BtnIndice.Click += BtnIndice_Click;
             BtnMigraciones.Click += BtnMigraciones_Click;
         }
 
-        // Event handlers para los botones de navegación
+        // --- MÉTODOS COMPLETOS PARA LA NAVEGACIÓN ---
         private void BtnAnexos_Click(object sender, RoutedEventArgs e)
         {
             CloseOtherWindows("Anexo");
@@ -55,9 +44,10 @@ namespace LexMigracion
             {
                 anexoWindow = new Anexo_A();
             }
+            // Para mostrar la ventana dentro del ContentControl, deberías cambiar la lógica,
+            // pero para abrirla como nueva ventana, esto funciona:
             anexoWindow.Show();
             anexoWindow.Activate();
-            UpdateButtonStyles(BtnAnexos);
         }
 
         private void BtnProtocolos_Click(object sender, RoutedEventArgs e)
@@ -69,7 +59,6 @@ namespace LexMigracion
             }
             protocoloWindow.Show();
             protocoloWindow.Activate();
-            UpdateButtonStyles(BtnProtocolos);
         }
 
         private void BtnIndice_Click(object sender, RoutedEventArgs e)
@@ -81,7 +70,6 @@ namespace LexMigracion
             }
             indiceWindow.Show();
             indiceWindow.Activate();
-            UpdateButtonStyles(BtnIndice);
         }
 
         private void BtnMigraciones_Click(object sender, RoutedEventArgs e)
@@ -93,77 +81,23 @@ namespace LexMigracion
             }
             migracionesWindow.Show();
             migracionesWindow.Activate();
-            UpdateButtonStyles(BtnMigraciones);
         }
 
-        // Método para cerrar otras ventanas
         private void CloseOtherWindows(string except)
         {
-            if (except != "Anexo" && anexoWindow != null && anexoWindow.IsLoaded)
-            {
-                anexoWindow.Close();
-            }
-            if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded)
-            {
-                protocoloWindow.Close();
-            }
-            if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded)
-            {
-                indiceWindow.Close();
-            }
-            if (except != "Migraciones" && migracionesWindow != null && migracionesWindow.IsLoaded)
-            {
-                migracionesWindow.Close();
-            }
+            if (except != "Anexo" && anexoWindow != null && anexoWindow.IsLoaded) anexoWindow.Close();
+            if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded) protocoloWindow.Close();
+            if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded) indiceWindow.Close();
+            if (except != "Migraciones" && migracionesWindow != null && migracionesWindow.IsLoaded) migracionesWindow.Close();
         }
 
-        // Método para actualizar estilos de botones (mostrar cuál está activo)
-        private void UpdateButtonStyles(Button activeButton)
-        {
-            ResetButtonStyle(BtnAnexos);
-            ResetButtonStyle(BtnProtocolos);
-            ResetButtonStyle(BtnIndice);
-            ResetButtonStyle(BtnMigraciones);
-            SetActiveButtonStyle(activeButton);
-        }
+        // --- Métodos para controlar la ventana ---
+        private void MinimizeWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-        private void ResetButtonStyle(Button button)
-        {
-            button.Background = System.Windows.Media.Brushes.Transparent;
-            button.Opacity = 0.8;
-        }
+        private void MaximizeRestoreWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 
-        private void SetActiveButtonStyle(Button button)
-        {
-            button.Background = new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(41, 128, 185)); // Color azul más claro
-            button.Opacity = 1.0;
-        }
+        private void CloseWindow_Click(object sender, RoutedEventArgs e) => this.Close();
 
-        // Event handlers para los controles de ventana
-        private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        private void MaximizeRestoreWindow_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
-            }
-        }
-
-        private void CloseWindow_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        // Permitir arrastrar la ventana desde la barra superior
         private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

@@ -1,4 +1,4 @@
-﻿<Window x:Class="LexMigracion.MainWindow"
+﻿<Window x:Class="LexMigración.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LexMigración - Ventana Principal"
@@ -21,13 +21,20 @@
 
             <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#2C3E50" MouseDown="MainWindow_MouseDown">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="LexMigración" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" FontSize="15"/>
+                <TextBlock Grid.Column="0" Text="LexMigración" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0" FontSize="15"/>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock Text="👤" FontFamily="Segoe UI Symbol" Foreground="White" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="Usuario Conectado"/>
+                    <TextBlock x:Name="TxtUsuarioLogeado" Text="Nombre de Usuario" Foreground="White" FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                     <Button Content="&#x2015;" Width="35" Height="30" Margin="3,0" FontSize="14" Background="Transparent" Foreground="White" BorderThickness="0" Click="MinimizeWindow_Click" ToolTip="Minimizar"/>
                     <Button Content="&#x25A1;" Width="35" Height="30" Margin="3,0" FontSize="12" Background="Transparent" Foreground="White" BorderThickness="0" Click="MaximizeRestoreWindow_Click" ToolTip="Maximizar/Restaurar"/>
                     <Button Content="&#x2715;" Width="35" Height="30" Margin="3,0" FontSize="12" Background="Transparent" Foreground="White" BorderThickness="0" Click="CloseWindow_Click" ToolTip="Cerrar"/>

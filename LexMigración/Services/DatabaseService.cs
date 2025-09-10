@@ -16,22 +16,20 @@ namespace LexMigración.Services
             {
                 using (var db = new LexMigracionContext())
                 {
-                    // Esto crea el archivo .db si no existe y define el esquema (las tablas).
+                    // Esto asegura que el esquema de la base de datos coincida con los modelos.
+                    // Si usas migraciones, este paso podría ser diferente, pero para empezar,
+                    // EnsureCreated() es la forma más directa.
                     db.Database.EnsureCreated();
                 }
             }
             catch (Exception ex)
             {
-                // Si algo sale mal, nos mostrará un mensaje de error detallado.
-                MessageBox.Show($"Error al crear o conectar a la base de datos: {ex.Message}");
+                MessageBox.Show($"Error al conectar con la base de datos: {ex.Message}");
             }
         }
 
         // --- Métodos para Anexos ---
 
-        /// <summary>
-        /// Obtiene una lista de todos los anexos de la base de datos.
-        /// </summary>
         public List<Anexo> ObtenerAnexos()
         {
             using (var db = new LexMigracionContext())
@@ -40,36 +38,26 @@ namespace LexMigración.Services
             }
         }
 
-        /// <summary>
-        /// Guarda un nuevo anexo en la base de datos.
-        /// </summary>
         public void GuardarAnexo(Anexo anexo)
         {
             using (var db = new LexMigracionContext())
             {
                 db.Anexos.Add(anexo);
-                db.SaveChanges(); // Guarda los cambios
+                db.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// Actualiza un anexo existente en la base de datos.
-        /// </summary>
         public void ActualizarAnexo(Anexo anexo)
         {
             using (var db = new LexMigracionContext())
             {
                 db.Anexos.Update(anexo);
-                db.SaveChanges(); // Guarda los cambios
+                db.SaveChanges();
             }
         }
 
-
         // --- Métodos para Protocolos ---
 
-        /// <summary>
-        /// Obtiene una lista de todos los protocolos de la base de datos.
-        /// </summary>
         public List<ProtocoloModel> ObtenerProtocolos()
         {
             using (var db = new LexMigracionContext())
@@ -78,9 +66,6 @@ namespace LexMigración.Services
             }
         }
 
-        /// <summary>
-        /// Guarda un nuevo protocolo en la base de datos.
-        /// </summary>
         public void GuardarProtocolo(ProtocoloModel protocolo)
         {
             using (var db = new LexMigracionContext())
@@ -90,12 +75,8 @@ namespace LexMigración.Services
             }
         }
 
-
         // --- Métodos para Índice ---
 
-        /// <summary>
-        /// Obtiene una lista de todos los registros del índice de la base de datos.
-        /// </summary>
         public List<RegistroIndice> ObtenerRegistrosIndice()
         {
             using (var db = new LexMigracionContext())
@@ -104,14 +85,10 @@ namespace LexMigración.Services
             }
         }
 
-        /// <summary>
-        /// Guarda un nuevo registro de índice en la base de datos.
-        /// </summary>
         public void GuardarRegistroIndice(RegistroIndice registro)
         {
             using (var db = new LexMigracionContext())
             {
-                // Lógica para determinar si es un registro nuevo o uno existente
                 if (registro.Id > 0)
                 {
                     db.Indices.Update(registro);
@@ -121,6 +98,41 @@ namespace LexMigración.Services
                     db.Indices.Add(registro);
                 }
                 db.SaveChanges();
+            }
+        }
+
+        // --- Métodos para Usuarios (Login y Registro) ---
+
+        public bool ValidarUsuario(string nombreUsuario, string contrasena, string rol)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                // Busca un usuario que coincida con nombre, contraseña y rol.
+                var usuario = db.Usuarios.FirstOrDefault(u =>
+                    u.NombreUsuario == nombreUsuario &&
+                    u.Contrasena == contrasena &&
+                    u.Rol == rol);
+
+                // Devuelve true si se encontró el usuario, de lo contrario false.
+                return usuario != null;
+            }
+        }
+
+        public string RegistrarUsuario(Usuario nuevoUsuario)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                // Verifica si ya existe un usuario con el mismo nombre.
+                if (db.Usuarios.Any(u => u.NombreUsuario == nuevoUsuario.NombreUsuario))
+                {
+                    return "El nombre de usuario ya está en uso. Por favor, elige otro.";
+                }
+
+                // Si no existe, lo agrega y guarda los cambios.
+                db.Usuarios.Add(nuevoUsuario);
+                db.SaveChanges();
+
+                return "Éxito";
             }
         }
     }
