@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using LexMigración.Models;
 using LexMigración.Services;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;//
 
 namespace LexMigración
 {
@@ -46,26 +49,47 @@ namespace LexMigración
         private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Title = "Selecciona un documento de texto";
-            // --- CAMBIO IMPORTANTE: Priorizamos archivos .txt ---
-            dlg.Filter = "Archivos de Texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*";
-
+            dlg.Title = "Selecciona un documento";
+            dlg.Filter = "Archivos de Texto (*.txt)|*.txt|Documento Word (*.docx)|*.docx|Todos los archivos (*.*)|*.*";
             if (dlg.ShowDialog() == true)
             {
                 try
                 {
                     _nombreArchivoSeleccionado = Path.GetFileName(dlg.FileName);
-                    // Esta función solo funciona bien con texto plano
-                    _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
+                    string extension = Path.GetExtension(dlg.FileName).ToLower();
+
+                    if (extension == ".txt")
+                    {
+                        _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
+                    }
+                    else if (extension == ".docx")
+                    {
+                        _contenidoArchivoSeleccionado = ExtraerTextoDocx(dlg.FileName);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Solo se permiten archivos de texto (.txt) o Word (.docx).", "Tipo de Archivo No Soportado",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
                     TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
                     TxtEditorContenido.Text = _contenidoArchivoSeleccionado;
                 }
                 catch (Exception ex)
                 {
-                    // Mensaje de error si el archivo no es de texto
-                    MessageBox.Show("El archivo seleccionado no parece ser un archivo de texto plano. Por favor, elige un archivo .txt.", "Error de Formato", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("No se pudo leer el archivo: " + ex.Message, "Error al cargar archivo",
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+        }
+
+        private string ExtraerTextoDocx(string filePath)
+        {
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
+            {
+                Body body = wordDoc.MainDocumentPart.Document.Body;
+                return body?.InnerText ?? "";
             }
         }
 
@@ -96,10 +120,8 @@ namespace LexMigración
                     ContenidoArchivo = _contenidoArchivoSeleccionado,
                     CreatedAt = DateTime.Today
                 };
-
                 _dbService.GuardarAnexo(nuevoAnexo);
                 MessageBox.Show("Anexo guardado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-
                 CargarAnexos();
                 LimpiarFormulario();
             }
