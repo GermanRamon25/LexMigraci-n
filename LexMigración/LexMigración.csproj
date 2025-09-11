@@ -240,6 +240,7 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Anexo.cs" />
+    <Compile Include="Models\Expediente.cs" />
     <Compile Include="Models\Protocolo.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Panel_Migraciones.xaml.cs">

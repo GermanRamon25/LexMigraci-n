@@ -30,7 +30,12 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <Label Content="Expediente Asociado"/>
-                            <ComboBox Name="CbExpediente"/>
+
+                            <ComboBox Name="CbExpediente" 
+                                      DisplayMemberPath="Identificador" 
+                                      SelectedValuePath="Identificador"
+                                      Margin="0,0,0,15"/>
+
                             <Label Content="Estado del Anexo" Margin="0,15,0,0"/>
                             <ComboBox Name="CbEstado">
                                 <ComboBoxItem Content="Listo"/>
@@ -73,20 +78,16 @@
         </Grid>
 
         <DockPanel Grid.Column="1" LastChildFill="True">
-
             <TextBlock DockPanel.Dock="Top" Text="📝 Editor de Contenido del Expediente" 
                        FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
-
             <Button DockPanel.Dock="Bottom" Name="BtnActualizarContenido" Content="Guardar Cambios del Texto" 
                     Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" HorizontalAlignment="Right" 
                     Click="BtnActualizarContenido_Click"/>
-
             <TextBox Name="TxtEditorContenido" 
                      AcceptsReturn="True" TextWrapping="Wrap" 
                      VerticalScrollBarVisibility="Auto" 
                      BorderBrush="#CCC" BorderThickness="1" Padding="5"
-                     FontFamily="Consolas" FontSize="14" Height="504"/>
-
+                     FontFamily="Consolas" FontSize="14" Height="515" Width="542"/>
         </DockPanel>
     </Grid>
 </Window>

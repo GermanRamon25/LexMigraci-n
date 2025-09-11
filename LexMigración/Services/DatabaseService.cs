@@ -8,17 +8,12 @@ namespace LexMigración.Services
 {
     public class DatabaseService
     {
-        // --- Constructor ---
-        // Se asegura de que la base de datos y las tablas se creen al iniciar el servicio.
         public DatabaseService()
         {
             try
             {
                 using (var db = new LexMigracionContext())
                 {
-                    // Esto asegura que el esquema de la base de datos coincida con los modelos.
-                    // Si usas migraciones, este paso podría ser diferente, pero para empezar,
-                    // EnsureCreated() es la forma más directa.
                     db.Database.EnsureCreated();
                 }
             }
@@ -29,7 +24,6 @@ namespace LexMigración.Services
         }
 
         // --- Métodos para Anexos ---
-
         public List<Anexo> ObtenerAnexos()
         {
             using (var db = new LexMigracionContext())
@@ -57,7 +51,6 @@ namespace LexMigración.Services
         }
 
         // --- Métodos para Protocolos ---
-
         public List<ProtocoloModel> ObtenerProtocolos()
         {
             using (var db = new LexMigracionContext())
@@ -75,8 +68,7 @@ namespace LexMigración.Services
             }
         }
 
-        // --- Métodos para Índice ---
-
+        // --- MÉTODOS RESTAURADOS PARA ÍNDICE ---
         public List<RegistroIndice> ObtenerRegistrosIndice()
         {
             using (var db = new LexMigracionContext())
@@ -101,19 +93,25 @@ namespace LexMigración.Services
             }
         }
 
-        // --- Métodos para Usuarios (Login y Registro) ---
+        // --- Métodos para Expedientes ---
+        public List<Expediente> ObtenerExpedientes()
+        {
+            using (var db = new LexMigracionContext())
+            {
+                return db.Expedientes.ToList();
+            }
+        }
 
+        // --- Métodos para Usuarios (Login y Registro) ---
         public bool ValidarUsuario(string nombreUsuario, string contrasena, string rol)
         {
             using (var db = new LexMigracionContext())
             {
-                // Busca un usuario que coincida con nombre, contraseña y rol.
                 var usuario = db.Usuarios.FirstOrDefault(u =>
                     u.NombreUsuario == nombreUsuario &&
                     u.Contrasena == contrasena &&
                     u.Rol == rol);
 
-                // Devuelve true si se encontró el usuario, de lo contrario false.
                 return usuario != null;
             }
         }
@@ -122,13 +120,11 @@ namespace LexMigración.Services
         {
             using (var db = new LexMigracionContext())
             {
-                // Verifica si ya existe un usuario con el mismo nombre.
                 if (db.Usuarios.Any(u => u.NombreUsuario == nuevoUsuario.NombreUsuario))
                 {
                     return "El nombre de usuario ya está en uso. Por favor, elige otro.";
                 }
 
-                // Si no existe, lo agrega y guarda los cambios.
                 db.Usuarios.Add(nuevoUsuario);
                 db.SaveChanges();
 
