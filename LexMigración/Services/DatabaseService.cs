@@ -50,6 +50,15 @@ namespace LexMigración.Services
             }
         }
 
+        public void EliminarAnexo(Anexo anexo)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Anexos.Remove(anexo);
+                db.SaveChanges();
+            }
+        }
+
         // --- Métodos para Protocolos ---
         public List<ProtocoloModel> ObtenerProtocolos()
         {
@@ -68,7 +77,7 @@ namespace LexMigración.Services
             }
         }
 
-        // --- MÉTODOS RESTAURADOS PARA ÍNDICE ---
+        // --- Métodos para Índice ---
         public List<RegistroIndice> ObtenerRegistrosIndice()
         {
             using (var db = new LexMigracionContext())

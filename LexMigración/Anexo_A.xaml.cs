@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using LexMigración.Models;
 using LexMigración.Services;
-// --- LIBRERÍAS NUEVAS PARA LEER DOCUMENTOS DE WORD ---
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
@@ -25,7 +24,6 @@ namespace LexMigración
             CargarAnexos();
         }
 
-        // --- MÉTODO NUEVO PARA EXTRAER TEXTO DE WORD (.docx) ---
         private string ExtractTextFromWord(string filePath)
         {
             try
@@ -42,7 +40,6 @@ namespace LexMigración
             }
         }
 
-        // --- LÓGICA ACTUALIZADA PARA MANEJAR .txt y .docx ---
         private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -55,7 +52,6 @@ namespace LexMigración
                 TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
                 string extension = Path.GetExtension(dlg.FileName).ToLower();
 
-                // Decidir cómo leer el archivo basado en su extensión
                 if (extension == ".txt")
                 {
                     _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
@@ -74,8 +70,6 @@ namespace LexMigración
                 TxtEditorContenido.Text = _contenidoArchivoSeleccionado;
             }
         }
-
-        // --- El resto del código no necesita cambios drásticos ---
 
         private void CargarExpedientes()
         {
@@ -169,6 +163,37 @@ namespace LexMigración
             else
             {
                 MessageBox.Show("Selecciona un anexo de la tabla para actualizar.", "Aviso");
+            }
+        }
+
+        private void BtnEliminar_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgAnexos.SelectedItem is Anexo anexoSeleccionado)
+            {
+                MessageBoxResult resultado = MessageBox.Show(
+                    $"¿Estás seguro de que deseas eliminar el anexo '{anexoSeleccionado.NombreArchivo}' del expediente '{anexoSeleccionado.ExpedienteId}'?",
+                    "Confirmar Eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _dbService.EliminarAnexo(anexoSeleccionado);
+                        MessageBox.Show("El anexo ha sido eliminado exitosamente.", "Eliminado", MessageBoxButton.OK, MessageBoxImage.Information);
+                        CargarAnexos();
+                        LimpiarFormulario();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ocurrió un error al eliminar el anexo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un anexo de la tabla para eliminar.", "Ningún Anexo Seleccionado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

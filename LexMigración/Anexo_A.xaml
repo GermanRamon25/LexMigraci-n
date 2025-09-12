@@ -30,12 +30,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <Label Content="Expediente Asociado"/>
-
-                            <ComboBox Name="CbExpediente" 
-                                      DisplayMemberPath="Identificador" 
-                                      SelectedValuePath="Identificador"
-                                      Margin="0,0,0,15"/>
-
+                            <ComboBox Name="CbExpediente" DisplayMemberPath="Identificador" SelectedValuePath="Identificador" Margin="0,0,0,15"/>
                             <Label Content="Estado del Anexo" Margin="0,15,0,0"/>
                             <ComboBox Name="CbEstado">
                                 <ComboBoxItem Content="Listo"/>
@@ -71,8 +66,10 @@
                         <DataGridTextColumn Header="Archivo Adjunto" Binding="{Binding NombreArchivo}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
+
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0" >
                     <Button Name="BtnGuardar" Content="Guardar Nuevo Anexo" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
+                    <Button Name="BtnEliminar" Content="Eliminar Anexo" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminar_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -87,7 +84,7 @@
                      AcceptsReturn="True" TextWrapping="Wrap" 
                      VerticalScrollBarVisibility="Auto" 
                      BorderBrush="#CCC" BorderThickness="1" Padding="5"
-                     FontFamily="Consolas" FontSize="14" Height="515" Width="542"/>
+                     FontFamily="Consolas" FontSize="14" Height="556"/>
         </DockPanel>
     </Grid>
 </Window>

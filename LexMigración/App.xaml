@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:LexMigración"
              StartupUri="Login.xaml">
     <Application.Resources>
+
         <Style x:Key="BaseTextBoxStyle" TargetType="{x:Type Control}">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="14"/>
@@ -14,7 +15,6 @@
             <Setter Property="Padding" Value="8"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
-
         <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
         <Style TargetType="ComboBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
         <Style TargetType="DatePicker" BasedOn="{StaticResource BaseTextBoxStyle}"/>
@@ -56,5 +56,16 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#D9534F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C9302C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Application.Resources>
 </Application>
