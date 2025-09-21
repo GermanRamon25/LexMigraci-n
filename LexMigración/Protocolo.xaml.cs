@@ -1,42 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LexMigración.Models;
+using LexMigración.Services;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LexMigración
 {
     public partial class Protocolo : Window
     {
+        private readonly DatabaseService _dbService;
+
         public Protocolo()
         {
             InitializeComponent();
+            _dbService = new DatabaseService();
+            CargarProtocolos();
+        }
+
+        private void CargarProtocolos()
+        {
+            try
+            {
+                var protocolos = _dbService.ObtenerProtocolos();
+                DgProtocolos.ItemsSource = protocolos;
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error al cargar los protocolos: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void DgProtocolos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Aquí puedes manejar la selección, por ejemplo cargar detalles en el formulario a la derecha
-            if (DgProtocolos.SelectedItem == null)
-                return;
-
-            dynamic protocolo = DgProtocolos.SelectedItem;
-            TxtExtracto.Text = protocolo.Extracto;
-            TxtTextoCompleto.Text = protocolo.TextoCompleto;
-            ChkFirmado.IsChecked = protocolo.Firmado;
+            if (DgProtocolos.SelectedItem is ProtocoloModel protocolo)
+            {
+                TxtExtracto.Text = protocolo.Extracto;
+                TxtTextoCompleto.Text = protocolo.TextoCompleto;
+                ChkFirmado.IsChecked = protocolo.Firmado;
+            }
+            else
+            {
+                TxtExtracto.Clear();
+                TxtTextoCompleto.Clear();
+                ChkFirmado.IsChecked = false;
+            }
         }
 
-        private void BtnMigrarAnexo_Click(object sender, RoutedEventArgs e)
+        private void BtnGuardarProtocolo_Click(object sender, RoutedEventArgs e)
         {
-            // Aquí colocarás la lógica para migrar datos de Anexo a Protocolo
-            MessageBox.Show("Migración Anexo → Protocolo ejecutada.");
+            if (DgProtocolos.SelectedItem is ProtocoloModel protocoloSeleccionado)
+            {
+                protocoloSeleccionado.Extracto = TxtExtracto.Text;
+                protocoloSeleccionado.TextoCompleto = TxtTextoCompleto.Text;
+                protocoloSeleccionado.Firmado = ChkFirmado.IsChecked ?? false;
+
+                try
+                {
+                    _dbService.ActualizarProtocolo(protocoloSeleccionado);
+                    MessageBox.Show("Protocolo actualizado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    CargarProtocolos();
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show("Error al guardar los cambios: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un protocolo de la lista para guardar.", "Ningún Protocolo Seleccionado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        // --- *** NUEVO MÉTODO AÑADIDO *** ---
+        private void BtnEliminarProtocolo_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgProtocolos.SelectedItem is ProtocoloModel protocoloSeleccionado)
+            {
+                // Pedir confirmación antes de eliminar
+                MessageBoxResult resultado = MessageBox.Show(
+                    $"¿Estás seguro de que deseas eliminar el protocolo con la escritura '{protocoloSeleccionado.NumeroEscritura}'?",
+                    "Confirmar Eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _dbService.EliminarProtocolo(protocoloSeleccionado);
+                        MessageBox.Show("El protocolo ha sido eliminado exitosamente.", "Eliminado", MessageBoxButton.OK, MessageBoxImage.Information);
+                        CargarProtocolos(); // Refrescar la tabla
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MessageBox.Show("Ocurrió un error al eliminar el protocolo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un protocolo de la tabla para eliminar.", "Ningún Protocolo Seleccionado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }

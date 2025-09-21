@@ -1,5 +1,5 @@
-﻿using LexMigración.Models; // Necesario para RegistroIndice
-using LexMigración.Services; // Necesario para DatabaseService
+﻿using LexMigración.Models;
+using LexMigración.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -25,17 +25,13 @@ namespace LexMigración
 
         private void InicializarDatos()
         {
-            // Cargar los datos desde la base de datos
             var registrosDb = _dbService.ObtenerRegistrosIndice();
             _registrosEnMemoria = new ObservableCollection<RegistroIndice>(registrosDb);
-
-            // Asignar al DataGrid
             DgIndice.ItemsSource = _registrosEnMemoria;
         }
 
         private void Filtros_Changed(object sender, RoutedEventArgs e)
         {
-            // (La lógica de filtrado sigue siendo útil y no necesita cambios)
             var filtroOtorgante = TxtFiltroOtorgante.Text?.ToLower() ?? "";
             var filtroOperacion = TxtFiltroOperacion.Text?.ToLower() ?? "";
             var filtroNumero = TxtFiltroNumero.Text?.ToLower() ?? "";
@@ -48,7 +44,6 @@ namespace LexMigración
                 (!filtroFecha.HasValue || r.Fecha.Date == filtroFecha.Value.Date)
             ).ToList();
 
-            // Actualizar la vista del DataGrid con los resultados filtrados
             DgIndice.ItemsSource = new ObservableCollection<RegistroIndice>(registrosFiltrados);
         }
 
@@ -60,25 +55,14 @@ namespace LexMigración
             }
         }
 
-        private void BtnMigrarProtocolo_Click(object sender, RoutedEventArgs e)
-        {
-            // Lógica para migrar protocolo
-            TxtMensaje.Text = "Iniciando migración de protocolo...";
-        }
-
         private void BtnGuardarCambios_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Ahora esto guardará los cambios en la base de datos
                 foreach (var registro in _registrosEnMemoria)
                 {
-                    // (Aquí se necesitaría una lógica más avanzada para detectar
-                    // si el registro es nuevo o modificado, pero para empezar
-                    // guardaremos todo)
                     _dbService.GuardarRegistroIndice(registro);
                 }
-
                 TxtMensaje.Text = "Cambios guardados exitosamente";
                 TxtMensaje.Foreground = Brushes.Green;
             }
@@ -101,23 +85,52 @@ namespace LexMigración
                 Fecha = DateTime.Today,
                 Folio = ""
             };
-
             _registrosEnMemoria.Add(nuevoRegistro);
-            DgIndice.ItemsSource = _registrosEnMemoria; // Refresca la vista
-
             DgIndice.SelectedItem = nuevoRegistro;
             DgIndice.ScrollIntoView(nuevoRegistro);
         }
+
+        // --- *** NUEVO MÉTODO AÑADIDO *** ---
+        private void BtnEliminarFila_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgIndice.SelectedItem is RegistroIndice registroSeleccionado)
+            {
+                MessageBoxResult resultado = MessageBox.Show(
+                    $"¿Estás seguro de que deseas eliminar el registro del índice para la escritura '{registroSeleccionado.NumeroEscritura}'?",
+                    "Confirmar Eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (resultado == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Eliminar de la base de datos
+                        _dbService.EliminarRegistroIndice(registroSeleccionado);
+                        // Eliminar de la colección en memoria para que se actualice la tabla
+                        _registrosEnMemoria.Remove(registroSeleccionado);
+
+                        TxtMensaje.Text = "Registro eliminado exitosamente.";
+                        TxtMensaje.Foreground = Brushes.Green;
+                    }
+                    catch (Exception ex)
+                    {
+                        TxtMensaje.Text = $"Error al eliminar: {ex.Message}";
+                        TxtMensaje.Foreground = Brushes.Red;
+                    }
+                }
+            }
+            else
+            {
+                TxtMensaje.Text = "Selecciona una fila para eliminar.";
+                TxtMensaje.Foreground = Brushes.Red;
+            }
+        }
     }
 
-    // Clase modelo para los registros del índice
-    // RECOMENDACIÓN: Mover esta clase a su propio archivo en la carpeta /Models
     public class RegistroIndice : INotifyPropertyChanged
     {
-        // -----  CORRECCIÓN: Se añade la clave principal (Primary Key)  -----
         public int Id { get; set; }
-        // --------------------------------------------------------------------
-
         private string _otorgante;
         private string _operacion;
         private string _numeroEscritura;
@@ -131,37 +144,31 @@ namespace LexMigración
             get => _otorgante;
             set { _otorgante = value; OnPropertyChanged(); }
         }
-
         public string Operacion
         {
             get => _operacion;
             set { _operacion = value; OnPropertyChanged(); }
         }
-
         public string NumeroEscritura
         {
             get => _numeroEscritura;
             set { _numeroEscritura = value; OnPropertyChanged(); }
         }
-
         public string Volumen
         {
             get => _volumen;
             set { _volumen = value; OnPropertyChanged(); }
         }
-
         public string Libro
         {
             get => _libro;
             set { _libro = value; OnPropertyChanged(); }
         }
-
         public DateTime Fecha
         {
             get => _fecha;
             set { _fecha = value; OnPropertyChanged(); }
         }
-
         public string Folio
         {
             get => _folio;
@@ -169,7 +176,6 @@ namespace LexMigración
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -77,6 +77,25 @@ namespace LexMigración.Services
             }
         }
 
+        public void ActualizarProtocolo(ProtocoloModel protocolo)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Protocolos.Update(protocolo);
+                db.SaveChanges();
+            }
+        }
+
+        // --- *** NUEVO MÉTODO AÑADIDO *** ---
+        public void EliminarProtocolo(ProtocoloModel protocolo)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Protocolos.Remove(protocolo);
+                db.SaveChanges();
+            }
+        }
+
         // --- Métodos para Índice ---
         public List<RegistroIndice> ObtenerRegistrosIndice()
         {
@@ -98,6 +117,16 @@ namespace LexMigración.Services
                 {
                     db.Indices.Add(registro);
                 }
+                db.SaveChanges();
+            }
+        }
+
+        // --- *** NUEVO MÉTODO AÑADIDO *** ---
+        public void EliminarRegistroIndice(RegistroIndice registro)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Indices.Remove(registro);
                 db.SaveChanges();
             }
         }

@@ -26,13 +26,12 @@
         </Style>
         <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
 
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Margin" Value="0,0,10,0"/>
-            <Setter Property="Background" Value="#333333"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -42,9 +41,24 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" BasedOn="{StaticResource ActionButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="White"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#555555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource ActionButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#D9534F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C9302C"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -59,9 +73,8 @@
         <StackPanel Grid.Column="0" Margin="0,0,20,0">
             <TextBlock Text="Protocolos Registrados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
             <DataGrid Name="DgProtocolos" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgProtocolos_SelectionChanged"
-                      CanUserAddRows="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD" 
+                      CanUserAddRows="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD"
                       AlternatingRowBackground="#FAFAFA" RowBackground="White" BorderBrush="#CCC">
-
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#333"/>
@@ -71,7 +84,6 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
-
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
                     <DataGridTextColumn Header="No. Escritura" Binding="{Binding NumeroEscritura}" Width="*"/>
@@ -81,20 +93,24 @@
             </DataGrid>
         </StackPanel>
 
-        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
+        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,-39">
             <StackPanel>
                 <TextBlock Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
-
                 <Label Content="Extracto del Documento"/>
-                <TextBox Name="TxtExtracto" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
-
+                <TextBox Name="TxtExtracto" Height="127" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
                 <Label Content="Texto Completo"/>
-                <TextBox Name="TxtTextoCompleto" Height="150" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
-
+                <TextBox Name="TxtTextoCompleto" Height="211" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
                 <CheckBox Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
 
-                <Button Name="BtnGuardarProtocolo" Content="Guardar Cambios" Style="{StaticResource PrimaryButtonStyle}" Width="150" HorizontalAlignment="Left"/>
-
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="BtnGuardarProtocolo" Content="Guardar Cambios" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardarProtocolo_Click"/>
+                    <Button Name="BtnEliminarProtocolo" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminarProtocolo_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="Segoe UI Symbol" Text="🗑️" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Eliminar" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>

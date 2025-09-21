@@ -58,6 +58,16 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#D9534F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C9302C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="20">
@@ -112,6 +122,12 @@
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,15,0,0">
             <Button Name="BtnGuardarCambios" Content="Guardar Cambios" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardarCambios_Click"/>
             <Button Name="BtnAgregarFila" Content="Agregar Fila" Style="{StaticResource SecondaryButtonStyle}" Click="BtnAgregarFila_Click"/>
+            <Button Name="BtnEliminarFila" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminarFila_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontFamily="Segoe UI Symbol" Text="🗑️" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Eliminar Fila" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <TextBlock Name="TxtMensaje" VerticalAlignment="Center" Foreground="ForestGreen" FontWeight="Bold" Margin="15,0,0,0"/>
         </StackPanel>
     </Grid>
