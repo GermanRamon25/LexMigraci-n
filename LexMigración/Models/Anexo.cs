@@ -12,8 +12,11 @@ namespace LexMigración.Models
         public string Estado { get; set; }
         public DateTime CreatedAt { get; set; }
         public string NombreArchivo { get; set; }
-
-        // --- NUEVA PROPIEDAD PARA GUARDAR EL CONTENIDO ---
         public string ContenidoArchivo { get; set; }
+
+        // --- *** NUEVOS CAMPOS AÑADIDOS *** ---
+        public string Volumen { get; set; }
+        public string Libro { get; set; }
+        public string Folio { get; set; }
     }
 }

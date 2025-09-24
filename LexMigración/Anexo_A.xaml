@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
-    <Grid Margin="20">
+    <Grid Margin="20,20,20,25">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="600"/>
             <ColumnDefinition Width="*"/>
@@ -30,13 +30,17 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <Label Content="Expediente Asociado"/>
-                            <ComboBox Name="CbExpediente" DisplayMemberPath="Identificador" SelectedValuePath="Identificador" Margin="0,0,0,15"/>
-                            <Label Content="Estado del Anexo" Margin="0,15,0,0"/>
-                            <ComboBox Name="CbEstado">
+                            <ComboBox Name="CbExpediente" DisplayMemberPath="Identificador" SelectedValuePath="Identificador" Margin="0,0,0,10"/>
+
+                            <Label Content="Estado del Anexo" Margin="0,5,0,0"/>
+                            <ComboBox Name="CbEstado" Margin="0,0,0,10">
                                 <ComboBoxItem Content="Listo"/>
                                 <ComboBoxItem Content="Faltante"/>
                                 <ComboBoxItem Content="Observado"/>
                             </ComboBox>
+
+                            <Label Content="Volumen" Margin="0,5,0,0"/>
+                            <TextBox Name="TxtVolumen" Margin="0,0,0,10"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <Label Content="Documento Adjunto"/>
@@ -46,7 +50,13 @@
                                     <TextBlock Text="Seleccionar Archivo..." VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
-                            <TextBlock Name="TxtNombreArchivo" Margin="0,8,0,0" FontStyle="Italic" Foreground="DarkBlue" TextWrapping="Wrap" Text="Ningún archivo seleccionado."/>
+                            <TextBlock Name="TxtNombreArchivo" Margin="0,8,0,10" FontStyle="Italic" Foreground="DarkBlue" TextWrapping="Wrap" Text="Ningún archivo seleccionado."/>
+
+                            <Label Content="Libro" Margin="0,5,0,0"/>
+                            <TextBox Name="TxtLibro" Margin="0,0,0,10"/>
+
+                            <Label Content="Folio" Margin="0,5,0,0"/>
+                            <TextBox Name="TxtFolio" Margin="0,0,0,10"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -63,6 +73,9 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
                         <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                        <DataGridTextColumn Header="Volumen" Binding="{Binding Volumen}" Width="80"/>
+                        <DataGridTextColumn Header="Libro" Binding="{Binding Libro}" Width="80"/>
+                        <DataGridTextColumn Header="Folio" Binding="{Binding Folio}" Width="80"/>
                         <DataGridTextColumn Header="Archivo Adjunto" Binding="{Binding NombreArchivo}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
@@ -75,16 +88,9 @@
         </Grid>
 
         <DockPanel Grid.Column="1" LastChildFill="True">
-            <TextBlock DockPanel.Dock="Top" Text="📝 Editor de Contenido del Expediente" 
-                       FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
-            <Button DockPanel.Dock="Bottom" Name="BtnActualizarContenido" Content="Guardar Cambios del Texto" 
-                    Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" HorizontalAlignment="Right" 
-                    Click="BtnActualizarContenido_Click"/>
-            <TextBox Name="TxtEditorContenido" 
-                     AcceptsReturn="True" TextWrapping="Wrap" 
-                     VerticalScrollBarVisibility="Auto" 
-                     BorderBrush="#CCC" BorderThickness="1" Padding="5"
-                     FontFamily="Consolas" FontSize="14" Height="556"/>
+            <TextBlock DockPanel.Dock="Top" Text="📝 Editor de Contenido del Expediente" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
+            <Button DockPanel.Dock="Bottom" Name="BtnActualizarContenido" Content="Guardar Cambios del Texto" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" HorizontalAlignment="Right" Click="BtnActualizarContenido_Click"/>
+            <TextBox Name="TxtEditorContenido" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" BorderBrush="#CCC" BorderThickness="1" Padding="5" FontFamily="Consolas" FontSize="14" Height="556"/>
         </DockPanel>
     </Grid>
 </Window>

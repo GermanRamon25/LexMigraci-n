@@ -239,6 +239,11 @@
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20250924202844_CamposDeIndiceAgregados.cs" />
+    <Compile Include="Migrations\20250924202844_CamposDeIndiceAgregados.designer.cs">
+      <DependentUpon>20250924202844_CamposDeIndiceAgregados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\LexMigracionContextModelSnapshot.cs" />
     <Compile Include="Models\Anexo.cs" />
     <Compile Include="Models\Expediente.cs" />
     <Compile Include="Models\Protocolo.cs" />

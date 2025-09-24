@@ -30,44 +30,29 @@ namespace LexMigración
             {
                 using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
                 {
-                    var body = wordDoc.MainDocumentPart.Document.Body;
-                    return body.InnerText;
+                    return wordDoc.MainDocumentPart.Document.Body.InnerText;
                 }
             }
             catch (Exception ex)
             {
-                return $"Error al leer el documento de Word: {ex.Message}";
+                return $"Error al leer el documento: {ex.Message}";
             }
         }
 
         private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Title = "Selecciona un documento para adjuntar";
-            dlg.Filter = "Documentos (*.docx;*.txt)|*.docx;*.txt|Todos los archivos (*.*)|*.*";
-
+            OpenFileDialog dlg = new OpenFileDialog { Filter = "Documentos (*.docx;*.txt)|*.docx;*.txt|Todos (*.*)|*.*" };
             if (dlg.ShowDialog() == true)
             {
                 _nombreArchivoSeleccionado = Path.GetFileName(dlg.FileName);
                 TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
                 string extension = Path.GetExtension(dlg.FileName).ToLower();
 
-                if (extension == ".txt")
-                {
-                    _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
-                }
-                else if (extension == ".docx")
-                {
-                    _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
-                }
-                else
-                {
-                    _contenidoArchivoSeleccionado = null;
-                    TxtEditorContenido.Text = $"Vista previa no disponible para archivos '{extension}'.";
-                    return;
-                }
+                if (extension == ".txt") _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
+                else if (extension == ".docx") _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
+                else _contenidoArchivoSeleccionado = null;
 
-                TxtEditorContenido.Text = _contenidoArchivoSeleccionado;
+                TxtEditorContenido.Text = _contenidoArchivoSeleccionado ?? $"Vista previa no disponible para '{extension}'.";
             }
         }
 
@@ -92,6 +77,10 @@ namespace LexMigración
             _nombreArchivoSeleccionado = null;
             _contenidoArchivoSeleccionado = null;
             DgAnexos.SelectedItem = null;
+            // --- *** LIMPIAR NUEVOS CAMPOS *** ---
+            TxtVolumen.Clear();
+            TxtLibro.Clear();
+            TxtFolio.Clear();
         }
 
         private void DgAnexos_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -100,19 +89,12 @@ namespace LexMigración
             {
                 CbExpediente.SelectedValue = anexo.ExpedienteId;
                 CbEstado.Text = anexo.Estado;
-                TxtNombreArchivo.Text = anexo.NombreArchivo ?? "Ningún archivo asociado.";
-                if (!string.IsNullOrEmpty(anexo.ContenidoArchivo))
-                {
-                    TxtEditorContenido.Text = anexo.ContenidoArchivo;
-                }
-                else if (!string.IsNullOrEmpty(anexo.NombreArchivo))
-                {
-                    TxtEditorContenido.Text = $"Vista previa no disponible para el archivo '{anexo.NombreArchivo}'.";
-                }
-                else
-                {
-                    TxtEditorContenido.Clear();
-                }
+                TxtNombreArchivo.Text = anexo.NombreArchivo ?? "N/A";
+                TxtEditorContenido.Text = anexo.ContenidoArchivo ?? string.Empty;
+                // --- *** MOSTRAR DATOS DE NUEVOS CAMPOS *** ---
+                TxtVolumen.Text = anexo.Volumen;
+                TxtLibro.Text = anexo.Libro;
+                TxtFolio.Text = anexo.Folio;
             }
         }
 
@@ -131,7 +113,11 @@ namespace LexMigración
                     Estado = (CbEstado.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Listo",
                     NombreArchivo = _nombreArchivoSeleccionado,
                     ContenidoArchivo = _contenidoArchivoSeleccionado,
-                    CreatedAt = DateTime.Today
+                    CreatedAt = DateTime.Today,
+                    // --- *** GUARDAR DATOS DE NUEVOS CAMPOS *** ---
+                    Volumen = TxtVolumen.Text,
+                    Libro = TxtLibro.Text,
+                    Folio = TxtFolio.Text
                 };
                 _dbService.GuardarAnexo(nuevoAnexo);
                 MessageBox.Show("Anexo guardado exitosamente.", "Éxito");
@@ -157,12 +143,8 @@ namespace LexMigración
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al actualizar el contenido: " + ex.Message, "Error");
+                    MessageBox.Show("Error al actualizar: " + ex.Message, "Error");
                 }
-            }
-            else
-            {
-                MessageBox.Show("Selecciona un anexo de la tabla para actualizar.", "Aviso");
             }
         }
 
@@ -170,30 +152,20 @@ namespace LexMigración
         {
             if (DgAnexos.SelectedItem is Anexo anexoSeleccionado)
             {
-                MessageBoxResult resultado = MessageBox.Show(
-                    $"¿Estás seguro de que deseas eliminar el anexo '{anexoSeleccionado.NombreArchivo}' del expediente '{anexoSeleccionado.ExpedienteId}'?",
-                    "Confirmar Eliminación",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-
-                if (resultado == MessageBoxResult.Yes)
+                if (MessageBox.Show($"¿Seguro que deseas eliminar el anexo '{anexoSeleccionado.NombreArchivo}'?", "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     try
                     {
                         _dbService.EliminarAnexo(anexoSeleccionado);
-                        MessageBox.Show("El anexo ha sido eliminado exitosamente.", "Eliminado", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Anexo eliminado.", "Éxito");
                         CargarAnexos();
                         LimpiarFormulario();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Ocurrió un error al eliminar el anexo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Error al eliminar: " + ex.Message, "Error");
                     }
                 }
-            }
-            else
-            {
-                MessageBox.Show("Por favor, selecciona un anexo de la tabla para eliminar.", "Ningún Anexo Seleccionado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

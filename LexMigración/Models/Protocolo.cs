@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LexMigración.Models
 {
-    public class ProtocoloModel // <-- NOMBRE CAMBIADO
+    public class ProtocoloModel
     {
         public int Id { get; set; }
         public string ExpedienteId { get; set; }
@@ -15,5 +15,10 @@ namespace LexMigración.Models
         public string Extracto { get; set; }
         public string TextoCompleto { get; set; }
         public bool Firmado { get; set; }
+
+        // --- *** NUEVOS CAMPOS AÑADIDOS *** ---
+        public string Volumen { get; set; }
+        public string Libro { get; set; }
+        public string Folio { get; set; }
     }
 }
