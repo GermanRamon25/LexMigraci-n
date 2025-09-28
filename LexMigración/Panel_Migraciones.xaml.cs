@@ -42,9 +42,13 @@ namespace LexMigración
 
                 foreach (var anexo in anexos)
                 {
-                    if (protocolosExistentes.Any(p => p.ExpedienteId == anexo.ExpedienteId))
+                    // Creamos un identificador único para el protocolo basado en el ID del anexo.
+                    string numeroEscrituraUnico = $"TEMP-ANEXO-{anexo.Id}";
+
+                    // CAMBIO CLAVE: Ahora buscamos si ya existe un protocolo con este ID único.
+                    if (protocolosExistentes.Any(p => p.NumeroEscritura == numeroEscrituraUnico))
                     {
-                        Log($"⚠️  Se omitió Anexo '{anexo.ExpedienteId}' (ya existe un Protocolo).");
+                        Log($"⚠️  Se omitió Anexo ID:{anexo.Id} para '{anexo.ExpedienteId}' (ya fue migrado).");
                         migracionesOmitidas++;
                         continue;
                     }
@@ -53,17 +57,17 @@ namespace LexMigración
                     {
                         ExpedienteId = anexo.ExpedienteId,
                         Fecha = anexo.CreatedAt,
-                        NumeroEscritura = $"TEMP-{anexo.ExpedienteId}",
+                        // Usamos el identificador único que creamos.
+                        NumeroEscritura = numeroEscrituraUnico,
                         Extracto = !string.IsNullOrEmpty(anexo.ContenidoArchivo) ? new string(anexo.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
                         TextoCompleto = anexo.ContenidoArchivo,
                         Firmado = false,
-                        // --- PASANDO LOS NUEVOS DATOS ---
                         Volumen = anexo.Volumen,
                         Libro = anexo.Libro,
                         Folio = anexo.Folio
                     };
                     _dbService.GuardarProtocolo(nuevoProtocolo);
-                    Log($"✔️  Anexo '{anexo.ExpedienteId}' migrado exitosamente.");
+                    Log($"✔️  Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') migrado exitosamente.");
                     migracionesExitosas++;
                 }
 
@@ -77,7 +81,7 @@ namespace LexMigración
             }
         }
 
-        // --- *** LÓGICA DE MIGRACIÓN 2 ACTUALIZADA *** ---
+        // (El resto del archivo no necesita cambios)
         private void BtnMigrarProtocoloIndice_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -110,7 +114,6 @@ namespace LexMigración
                         Fecha = protocolo.Fecha,
                         Otorgante = otorgante,
                         Operacion = operacion,
-                        // --- PASANDO LOS NUEVOS DATOS (YA NO SON 'PENDIENTE') ---
                         Volumen = protocolo.Volumen,
                         Libro = protocolo.Libro,
                         Folio = protocolo.Folio

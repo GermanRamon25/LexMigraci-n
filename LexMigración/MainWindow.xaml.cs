@@ -1,10 +1,6 @@
-﻿using LexMigración;
+﻿using LexMigración.Services;
 using System.Windows;
 using System.Windows.Input;
-using LexMigración.Services;
-using System.Windows.Controls;
-using System;
-using System.Linq;
 
 // --- LÍNEA CORREGIDA ---
 // Asegúrate de que el namespace tenga la tilde, igual que en tus otros archivos.
@@ -17,6 +13,7 @@ namespace LexMigración
         private Protocolo protocoloWindow;
         private Indice indiceWindow;
         private Panel_Migraciones migracionesWindow;
+        private ExpedientesWindow expedientesWindow; // --- Variable para la nueva ventana ---
 
         public MainWindow(string nombreUsuario)
         {
@@ -31,6 +28,7 @@ namespace LexMigración
         private void InitializeButtons()
         {
             BtnAnexos.Click += BtnAnexos_Click;
+            BtnExpedientes.Click += BtnExpedientes_Click; // --- Conexión del nuevo botón ---
             BtnProtocolos.Click += BtnProtocolos_Click;
             BtnIndice.Click += BtnIndice_Click;
             BtnMigraciones.Click += BtnMigraciones_Click;
@@ -44,10 +42,20 @@ namespace LexMigración
             {
                 anexoWindow = new Anexo_A();
             }
-            // Para mostrar la ventana dentro del ContentControl, deberías cambiar la lógica,
-            // pero para abrirla como nueva ventana, esto funciona:
             anexoWindow.Show();
             anexoWindow.Activate();
+        }
+
+        // --- MÉTODO NUEVO PARA EL BOTÓN DE EXPEDIENTES ---
+        private void BtnExpedientes_Click(object sender, RoutedEventArgs e)
+        {
+            CloseOtherWindows("Expedientes");
+            if (expedientesWindow == null || !expedientesWindow.IsLoaded)
+            {
+                expedientesWindow = new ExpedientesWindow();
+            }
+            expedientesWindow.Show();
+            expedientesWindow.Activate();
         }
 
         private void BtnProtocolos_Click(object sender, RoutedEventArgs e)
@@ -86,6 +94,7 @@ namespace LexMigración
         private void CloseOtherWindows(string except)
         {
             if (except != "Anexo" && anexoWindow != null && anexoWindow.IsLoaded) anexoWindow.Close();
+            if (except != "Expedientes" && expedientesWindow != null && expedientesWindow.IsLoaded) expedientesWindow.Close(); // --- Línea para cerrar la ventana de expedientes ---
             if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded) protocoloWindow.Close();
             if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded) indiceWindow.Close();
             if (except != "Migraciones" && migracionesWindow != null && migracionesWindow.IsLoaded) migracionesWindow.Close();
@@ -95,6 +104,7 @@ namespace LexMigración
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
         private void MaximizeRestoreWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e) => this.Close();
 

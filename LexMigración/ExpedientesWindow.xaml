@@ -1,0 +1,132 @@
+﻿<Window x:Class="LexMigración.ExpedientesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Gestión de Expedientes" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+        <Style x:Key="BaseTextBoxStyle" TargetType="{x:Type Control}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PrimaryButtonStyle" BasedOn="{StaticResource ActionButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#555555"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DangerButtonStyle" BasedOn="{StaticResource ActionButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#D9534F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C9302C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SecondaryButtonStyle" BasedOn="{StaticResource ActionButtonStyle}" TargetType="Button">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="380"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0" Margin="0,0,20,0">
+            <TextBlock DockPanel.Dock="Top" Text="📂 Expedientes Registrados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,15" FontFamily="Times New Roman"/>
+            <DataGrid Name="DgExpedientes" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgExpedientes_SelectionChanged"
+                      CanUserAddRows="False" IsReadOnly="True" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD" 
+                      AlternatingRowBackground="#FAFAFA" RowBackground="White" BorderBrush="#CCC">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#333"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Identificador" Binding="{Binding Identificador}" Width="*"/>
+                    <DataGridTextColumn Header="Nombre del Cliente" Binding="{Binding NombreCliente}" Width="2*"/>
+                    <DataGridTextColumn Header="Tipo de Caso" Binding="{Binding TipoCaso}" Width="*"/>
+                    <DataGridTextColumn Header="Fecha Creación" Binding="{Binding FechaCreacion, StringFormat=d}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="✏️ Detalles del Expediente" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+
+                <Label Content="Identificador (Código único)"/>
+                <TextBox Name="TxtIdentificador" Margin="0,0,0,15"/>
+
+                <Label Content="Nombre del Cliente Principal"/>
+                <TextBox Name="TxtNombreCliente" Margin="0,0,0,15"/>
+
+                <Label Content="Tipo de Caso (Ej: Compra-Venta, Testamento)"/>
+                <TextBox Name="TxtTipoCaso" Margin="0,0,0,20"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="BtnGuardar" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💾" FontFamily="Segoe UI Symbol" Margin="0,0,8,0"/>
+                            <TextBlock Text="Guardar"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Name="BtnEliminar" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminar_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🗑️" FontFamily="Segoe UI Symbol" Margin="0,0,8,0"/>
+                            <TextBlock Text="Eliminar"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button Name="BtnNuevo" Content="✨ Limpiar para crear nuevo" Style="{StaticResource SecondaryButtonStyle}" Margin="0,10,0,0" Click="BtnNuevo_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

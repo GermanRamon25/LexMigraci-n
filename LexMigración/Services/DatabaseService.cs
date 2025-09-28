@@ -14,7 +14,8 @@ namespace LexMigración.Services
             {
                 using (var db = new LexMigracionContext())
                 {
-                    db.Database.EnsureCreated();
+                    // Se comenta esta línea para que las "Migraciones" se encarguen de la base de datos de ahora en adelante.
+                    // db.Database.EnsureCreated();
                 }
             }
             catch (Exception ex)
@@ -86,7 +87,6 @@ namespace LexMigración.Services
             }
         }
 
-        // --- *** NUEVO MÉTODO AÑADIDO *** ---
         public void EliminarProtocolo(ProtocoloModel protocolo)
         {
             using (var db = new LexMigracionContext())
@@ -121,7 +121,6 @@ namespace LexMigración.Services
             }
         }
 
-        // --- *** NUEVO MÉTODO AÑADIDO *** ---
         public void EliminarRegistroIndice(RegistroIndice registro)
         {
             using (var db = new LexMigracionContext())
@@ -137,6 +136,39 @@ namespace LexMigración.Services
             using (var db = new LexMigracionContext())
             {
                 return db.Expedientes.ToList();
+            }
+        }
+
+        // --- *** MÉTODOS NUEVOS PARA GESTIONAR EXPEDIENTES *** ---
+        public void GuardarExpediente(Expediente expediente)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                // Verificar si ya existe un expediente con el mismo identificador
+                if (db.Expedientes.Any(e => e.Identificador == expediente.Identificador))
+                {
+                    throw new Exception("Ya existe un expediente con ese identificador. Por favor, elige otro.");
+                }
+                db.Expedientes.Add(expediente);
+                db.SaveChanges();
+            }
+        }
+
+        public void ActualizarExpediente(Expediente expediente)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Expedientes.Update(expediente);
+                db.SaveChanges();
+            }
+        }
+
+        public void EliminarExpediente(Expediente expediente)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                db.Expedientes.Remove(expediente);
+                db.SaveChanges();
             }
         }
 

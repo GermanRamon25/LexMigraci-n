@@ -233,6 +233,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ExpedientesWindow.xaml.cs">
+      <DependentUpon>ExpedientesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Indice.xaml.cs">
       <DependentUpon>Indice.xaml</DependentUpon>
     </Compile>
@@ -260,6 +263,10 @@
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\LexMigracionContext.cs" />
     <Page Include="Anexo_A.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExpedientesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

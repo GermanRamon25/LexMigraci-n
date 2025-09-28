@@ -48,6 +48,7 @@
                         <TextBlock Text="Anexos" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+
                 <Button x:Name="BtnProtocolos" Height="50" Margin="5" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe UI Symbol" Text="📑" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
@@ -64,6 +65,12 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe UI Symbol" Text="🔄" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
                         <TextBlock Text="Migraciones" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BtnExpedientes" Height="50" Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="14" HorizontalContentAlignment="Left" Padding="20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="Segoe UI Symbol" Text="📂" Margin="0,0,10,0" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="Expedientes" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
