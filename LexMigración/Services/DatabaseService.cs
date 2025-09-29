@@ -139,12 +139,19 @@ namespace LexMigración.Services
             }
         }
 
-        // --- *** MÉTODOS NUEVOS PARA GESTIONAR EXPEDIENTES *** ---
+        // --- *** MÉTODO NUEVO DE VALIDACIÓN AÑADIDO AQUÍ *** ---
+        public bool ExisteExpediente(string identificador)
+        {
+            using (var db = new LexMigracionContext())
+            {
+                return db.Expedientes.Any(e => e.Identificador == identificador);
+            }
+        }
+
         public void GuardarExpediente(Expediente expediente)
         {
             using (var db = new LexMigracionContext())
             {
-                // Verificar si ya existe un expediente con el mismo identificador
                 if (db.Expedientes.Any(e => e.Identificador == expediente.Identificador))
                 {
                     throw new Exception("Ya existe un expediente con ese identificador. Por favor, elige otro.");

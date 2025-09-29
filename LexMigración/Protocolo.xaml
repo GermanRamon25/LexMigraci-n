@@ -62,6 +62,16 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="20">
@@ -70,8 +80,10 @@
             <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="0,0,20,0">
-            <TextBlock Text="Protocolos Registrados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+        <DockPanel Grid.Column="0" Margin="0,0,20,0">
+            <TextBlock DockPanel.Dock="Top" Text="Protocolos Registrados" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,15" FontFamily="Times New Roman"/>
+            <Button DockPanel.Dock="Bottom" Name="BtnImprimirLista" Content="Imprimir Lista" Style="{StaticResource SecondaryButtonStyle}" Margin="0,10,0,0" HorizontalAlignment="Left" Click="BtnImprimirLista_Click"/>
+
             <DataGrid Name="DgProtocolos" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="DgProtocolos_SelectionChanged"
                       CanUserAddRows="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#DDD"
                       AlternatingRowBackground="#FAFAFA" RowBackground="White" BorderBrush="#CCC">
@@ -91,15 +103,15 @@
                     <DataGridCheckBoxColumn Header="Firmado" Binding="{Binding Firmado}" Width="Auto"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+        </DockPanel>
 
-        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,-39">
+        <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
             <StackPanel>
                 <TextBlock Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
                 <Label Content="Extracto del Documento"/>
-                <TextBox Name="TxtExtracto" Height="127" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+                <TextBox Name="TxtExtracto" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
                 <Label Content="Texto Completo"/>
-                <TextBox Name="TxtTextoCompleto" Height="211" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+                <TextBox Name="TxtTextoCompleto" Height="150" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
                 <CheckBox Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
 
                 <StackPanel Orientation="Horizontal">

@@ -128,6 +128,7 @@
                     <TextBlock Text="Eliminar Fila" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
+            <Button Name="BtnImprimirLista" Content="Imprimir Lista" Style="{StaticResource SecondaryButtonStyle}" Click="BtnImprimirLista_Click"/>
             <TextBlock Name="TxtMensaje" VerticalAlignment="Center" Foreground="ForestGreen" FontWeight="Bold" Margin="15,0,0,0"/>
         </StackPanel>
     </Grid>

@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
-    <Grid Margin="20,20,20,25">
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="600"/>
             <ColumnDefinition Width="*"/>
@@ -83,6 +83,7 @@
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0" >
                     <Button Name="BtnGuardar" Content="Guardar Nuevo Anexo" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
                     <Button Name="BtnEliminar" Content="Eliminar Anexo" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminar_Click"/>
+                    <Button Name="BtnImprimirLista" Content="Imprimir Lista" Style="{StaticResource SecondaryButtonStyle}" Click="BtnImprimirLista_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
