@@ -51,7 +51,7 @@ namespace LexMigración
             registroWindow.ShowDialog();
         }
 
-        // --- *** LÓGICA PARA MOSTRAR/OCULTAR CONTRASEÑA *** ---
+        // --- LÓGICA PARA MOSTRAR/OCULTAR CONTRASEÑA ---
 
         private void BtnMostrarContra_Checked(object sender, RoutedEventArgs e)
         {
@@ -91,6 +91,12 @@ namespace LexMigración
                 PwdContra.Password = TxtContraVisible.Text;
                 _isPasswordSyncing = false;
             }
+        }
+
+        // --- *** MÉTODO NUEVO AÑADIDO PARA CERRAR LA VENTANA *** ---
+        private void CloseWindow_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
