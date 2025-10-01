@@ -26,6 +26,25 @@ namespace LexMigración
             CargarExpedientes();
             CargarAnexos();
         }
+        // --- AÑADIR ESTOS MÉTODOS AL FINAL DE LA CLASE ANEXO_A ---
+
+        private void NumberValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // Verifica si el carácter es un número (0-9)
+            if (!char.IsDigit(e.Text, e.Text.Length - 1))
+            {
+                e.Handled = true; // Ignora el carácter si no es un dígito
+            }
+        }
+
+        private void AlphanumericValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // Verifica si el carácter es una letra o un dígito
+            if (!char.IsLetterOrDigit(e.Text, e.Text.Length - 1))
+            {
+                e.Handled = true; // Ignora el carácter si no es alfanumérico
+            }
+        }
 
         // ... (Todos los métodos como CargarExpedientes, Guardar, Eliminar, etc. no cambian)
         private void CargarExpedientes()
