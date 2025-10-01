@@ -64,7 +64,7 @@ namespace LexMigración
                         Firmado = false,
                         Volumen = anexo.Volumen,
                         Libro = anexo.Libro,
-                        Folio = anexo.Folio
+                        Folio = anexo.NumeroEscritura
                     };
                     _dbService.GuardarProtocolo(nuevoProtocolo);
                     Log($"✔️  Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') migrado exitosamente.");

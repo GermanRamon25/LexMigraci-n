@@ -20,7 +20,7 @@ namespace LexMigración.Services
         {
             // IMPORTANTE: Reemplaza "NOMBRE_DE_TU_SERVIDOR" con el nombre de tu
             // instancia de SQL Server (ej: "MI-PC\SQLEXPRESS" o el nombre que uses en SSMS).
-            string connectionString = "Server=GERMAN25\\SQLEXPRESS;Database=LexMigracionDB;Trusted_Connection=True;TrustServerCertificate=True;";
+            string connectionString = "Server=ALONDRA\\SQLEXPRESS;Database=LexMigracionDB2;Trusted_Connection=True;TrustServerCertificate=True;";
 
             optionsBuilder.UseSqlServer(connectionString);
         }

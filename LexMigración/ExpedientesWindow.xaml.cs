@@ -144,7 +144,7 @@ namespace LexMigración
             {
                 foreach (var anexo in anexos)
                 {
-                    doc.Blocks.Add(new Paragraph(new Run($" •  Archivo: {anexo.NombreArchivo ?? "N/A"}, Estado: {anexo.Estado}, Volumen: {anexo.Volumen}, Libro: {anexo.Libro}, Folio: {anexo.Folio}")) { Margin = new Thickness(20, 0, 0, 5) });
+                    doc.Blocks.Add(new Paragraph(new Run($" •  Archivo: {anexo.NombreArchivo ?? "N/A"}, Estado: {anexo.Estado}, Volumen: {anexo.Volumen}, Libro: {anexo.Libro}, Folio: {anexo.NumeroEscritura}")) { Margin = new Thickness(20, 0, 0, 5) });
                 }
             }
             else

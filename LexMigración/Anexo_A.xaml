@@ -55,8 +55,8 @@
                             <Label Content="Libro" Margin="0,5,0,0"/>
                             <TextBox Name="TxtLibro" Margin="0,0,0,10"/>
 
-                            <Label Content="Folio" Margin="0,5,0,0"/>
-                            <TextBox Name="TxtFolio" Margin="0,0,0,10"/>
+                            <Label Content="No.Escritura" Margin="0,5,0,0"/>
+                            <TextBox Name="TxtNumeroEscritura" Margin="0,0,0,10"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -75,7 +75,7 @@
                         <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
                         <DataGridTextColumn Header="Volumen" Binding="{Binding Volumen}" Width="80"/>
                         <DataGridTextColumn Header="Libro" Binding="{Binding Libro}" Width="80"/>
-                        <DataGridTextColumn Header="Folio" Binding="{Binding Folio}" Width="80"/>
+                        <DataGridTextColumn Header="No. Escritura" Binding="{Binding NumeroEscritura}" Width="100"/>
                         <DataGridTextColumn Header="Archivo Adjunto" Binding="{Binding NombreArchivo}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>

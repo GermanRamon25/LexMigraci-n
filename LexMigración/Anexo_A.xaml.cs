@@ -77,7 +77,7 @@ namespace LexMigración
             DgAnexos.SelectedItem = null;
             TxtVolumen.Clear();
             TxtLibro.Clear();
-            TxtFolio.Clear();
+            TxtNumeroEscritura.Clear();
         }
 
         private void DgAnexos_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -90,7 +90,7 @@ namespace LexMigración
                 TxtEditorContenido.Text = anexo.ContenidoArchivo ?? string.Empty;
                 TxtVolumen.Text = anexo.Volumen;
                 TxtLibro.Text = anexo.Libro;
-                TxtFolio.Text = anexo.Folio;
+                TxtNumeroEscritura.Text = anexo.NumeroEscritura;
             }
         }
 
@@ -112,7 +112,11 @@ namespace LexMigración
                     CreatedAt = DateTime.Today,
                     Volumen = TxtVolumen.Text,
                     Libro = TxtLibro.Text,
-                    Folio = TxtFolio.Text
+                    // 🚨 CORRECCIÓN FINAL: Usamos la nueva propiedad NumeroEscritura
+                    NumeroEscritura = TxtNumeroEscritura.Text
+
+                    // *** SE ELIMINAN TODAS LAS LÍNEAS DE FOLIO/FOLIADO INICIO/FIN/TOTALHOJAS ***
+                    // Ya no son necesarias ni en el modelo ni en la base de datos.
                 };
                 _dbService.GuardarAnexo(nuevoAnexo);
                 MessageBox.Show("Anexo guardado exitosamente.", "Éxito");
@@ -121,7 +125,6 @@ namespace LexMigración
             }
             catch (Exception ex) { MessageBox.Show("Error al guardar el anexo: " + ex.Message, "Error"); }
         }
-
         private void BtnActualizarContenido_Click(object sender, RoutedEventArgs e)
         {
             if (DgAnexos.SelectedItem is Anexo anexoSeleccionado)
