@@ -45,6 +45,24 @@ namespace LexMigración
             anexoWindow.Show();
             anexoWindow.Activate();
         }
+        // Archivo: LexMigración/MainWindow.xaml.cs
+
+        // ... (dentro de la clase MainWindow)
+
+        // --- NUEVO MÉTODO PARA CERRAR SESIÓN Y VOLVER AL LOGIN ---
+        private void BtnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            // Cierra todas las ventanas secundarias abiertas
+            CloseOtherWindows("None");
+
+            // Crea y muestra la ventana de Login
+            Login loginWindow = new Login();
+            loginWindow.Show();
+
+            // Cierra la ventana principal (MainWindow)
+            this.Close();
+        }
+        // ...
 
         // --- MÉTODO NUEVO PARA EL BOTÓN DE EXPEDIENTES ---
         private void BtnExpedientes_Click(object sender, RoutedEventArgs e)

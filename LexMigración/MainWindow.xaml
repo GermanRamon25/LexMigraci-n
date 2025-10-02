@@ -51,7 +51,6 @@
                 <ColumnDefinition Width="230"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
             <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#333333" MouseDown="MainWindow_MouseDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -61,11 +60,74 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
                     <TextBlock Text="LexMigración" Foreground="#D4AF37" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="16"/>
                 </StackPanel>
+
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
-                        <TextBlock Text="👤" FontFamily="Segoe UI Symbol" Foreground="#CFD8DC" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="Usuario Conectado"/>
-                        <TextBlock x:Name="TxtUsuarioLogeado" Text="Nombre de Usuario" Foreground="White" FontWeight="SemiBold"/>
-                    </StackPanel>
+
+                    <Grid Margin="0,0,10,0">
+                        <ToggleButton x:Name="BtnPerfilToggle" 
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Background="#333333" 
+              Foreground="White"
+              BorderThickness="0"
+              Padding="15,0"
+              Height="45">
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤" FontFamily="Segoe UI Symbol" Foreground="#D4AF37" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="Usuario Conectado"/>
+                                <TextBlock x:Name="TxtUsuarioLogeado" Text="Nombre de Usuario" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <ToggleButton.Style>
+                                <Style TargetType="{x:Type ToggleButton}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                <Border x:Name="Border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#555555"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#555555"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+
+                        <Popup x:Name="PopupPerfil"
+                   IsOpen="{Binding ElementName=BtnPerfilToggle, Path=IsChecked, Mode=TwoWay}"
+                   PlacementTarget="{Binding ElementName=BtnPerfilToggle}"
+                   Placement="Bottom"
+                   HorizontalOffset="-70" 
+                   VerticalOffset="5"
+                   StaysOpen="False"
+                   AllowsTransparency="True">
+                            <Border Background="White" BorderBrush="#D4AF37" BorderThickness="2" CornerRadius="5" Padding="20" Width="200">
+                                <StackPanel>
+                                    <StackPanel Orientation="Vertical" Margin="0,0,0,20" HorizontalAlignment="Center">
+                                        <TextBlock Text="Nombre:" FontWeight="SemiBold" Foreground="#555" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding ElementName=TxtUsuarioLogeado, Path=Text}" FontWeight="Bold" Foreground="#F06292" FontSize="16"/>
+                                    </StackPanel>
+
+                                    <Button Content="Salir" 
+                                Style="{StaticResource PrimaryButtonStyle}" 
+                                Height="35"
+                                Click="BtnSalir_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </Grid>
                     <Button Content="&#xE949;" FontFamily="Segoe MDL2 Assets" Width="45" Height="45" Background="Transparent" Foreground="White" BorderThickness="0" Click="MinimizeWindow_Click" ToolTip="Minimizar"/>
                     <Button Content="&#xE739;" FontFamily="Segoe MDL2 Assets" Width="45" Height="45" Background="Transparent" Foreground="White" BorderThickness="0" Click="MaximizeRestoreWindow_Click" ToolTip="Maximizar/Restaurar"/>
                     <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" Width="45" Height="45" Background="Transparent" Foreground="#F06292" BorderThickness="0" Click="CloseWindow_Click" ToolTip="Cerrar"/>
