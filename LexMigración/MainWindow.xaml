@@ -65,13 +65,13 @@
 
                     <Grid Margin="0,0,10,0">
                         <ToggleButton x:Name="BtnPerfilToggle" 
-              HorizontalAlignment="Right"
-              VerticalAlignment="Center"
-              Background="#333333" 
-              Foreground="White"
-              BorderThickness="0"
-              Padding="15,0"
-              Height="45">
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"
+                              Background="#333333" 
+                              Foreground="White"
+                              BorderThickness="0"
+                              Padding="15,0"
+                              Height="45">
 
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="👤" FontFamily="Segoe UI Symbol" Foreground="#D4AF37" VerticalAlignment="Center" Margin="0,0,8,0" ToolTip="Usuario Conectado"/>
@@ -84,11 +84,11 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                 <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}">
                                                     <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                                                      VerticalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
@@ -106,13 +106,13 @@
                         </ToggleButton>
 
                         <Popup x:Name="PopupPerfil"
-                   IsOpen="{Binding ElementName=BtnPerfilToggle, Path=IsChecked, Mode=TwoWay}"
-                   PlacementTarget="{Binding ElementName=BtnPerfilToggle}"
-                   Placement="Bottom"
-                   HorizontalOffset="-70" 
-                   VerticalOffset="5"
-                   StaysOpen="False"
-                   AllowsTransparency="True">
+                               IsOpen="{Binding ElementName=BtnPerfilToggle, Path=IsChecked, Mode=TwoWay}"
+                               PlacementTarget="{Binding ElementName=BtnPerfilToggle}"
+                               Placement="Bottom"
+                               HorizontalOffset="-70" 
+                               VerticalOffset="5"
+                               StaysOpen="False"
+                               AllowsTransparency="True">
                             <Border Background="White" BorderBrush="#D4AF37" BorderThickness="2" CornerRadius="5" Padding="20" Width="200">
                                 <StackPanel>
                                     <StackPanel Orientation="Vertical" Margin="0,0,0,20" HorizontalAlignment="Center">
@@ -121,9 +121,9 @@
                                     </StackPanel>
 
                                     <Button Content="Salir" 
-                                Style="{StaticResource PrimaryButtonStyle}" 
-                                Height="35"
-                                Click="BtnSalir_Click"/>
+                                            Style="{StaticResource PrimaryButtonStyle}" 
+                                            Height="35"
+                                            Click="BtnSalir_Click"/>
                                 </StackPanel>
                             </Border>
                         </Popup>
@@ -144,7 +144,7 @@
                 <Button x:Name="BtnAnexos" Style="{StaticResource NavButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe UI Symbol" Text="📄" Margin="0,0,15,0" FontSize="18" VerticalAlignment="Center"/>
-                        <TextBlock Text="Anexos" VerticalAlignment="Center"/>
+                        <TextBlock Text="Testimonios" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="BtnProtocolos" Style="{StaticResource NavButtonStyle}">
@@ -157,14 +157,6 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe UI Symbol" Text="📋" Margin="0,0,15,0" FontSize="18" VerticalAlignment="Center"/>
                         <TextBlock Text="Índice" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Separator Margin="15" Background="#555555"/>
-                <TextBlock Text="HERRAMIENTAS" Foreground="#AAAAAA" FontWeight="Bold" Margin="20,10,0,10" FontSize="12"/>
-                <Button x:Name="BtnMigraciones" Style="{StaticResource NavButtonStyle}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="Segoe UI Symbol" Text="🔄" Margin="0,0,15,0" FontSize="18" VerticalAlignment="Center"/>
-                        <TextBlock Text="Migraciones" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

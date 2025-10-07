@@ -125,54 +125,6 @@ namespace LexMigración
                 TxtMensaje.Foreground = Brushes.Red;
             }
         }
-
-        // --- *** MÉTODOS NUEVOS PARA IMPRIMIR LA LISTA *** ---
-        private void BtnImprimirLista_Click(object sender, RoutedEventArgs e)
-        {
-            PrintDialog printDialog = new PrintDialog();
-            if (printDialog.ShowDialog() == true)
-            {
-                // Importante: El documento se creará a partir de la vista actual de la tabla,
-                // respetando los filtros que hayas aplicado.
-                FlowDocument doc = CrearDocumentoIndice();
-                IDocumentPaginatorSource idpSource = doc;
-                printDialog.PrintDocument(idpSource.DocumentPaginator, "Listado del Índice");
-            }
-        }
-
-        private FlowDocument CrearDocumentoIndice()
-        {
-            FlowDocument doc = new FlowDocument();
-            doc.PagePadding = new Thickness(50);
-            doc.ColumnWidth = 800;
-            doc.Blocks.Add(new Paragraph(new Run("Índice General de Escrituras")) { FontSize = 20, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 20) });
-
-            Table tabla = new Table() { CellSpacing = 0, BorderBrush = Brushes.Gray, BorderThickness = new Thickness(1) };
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(2, GridUnitType.Star) }); // Otorgante
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1.5, GridUnitType.Star) }); // Operación
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1, GridUnitType.Star) }); // No. Escritura
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(100) }); // Fecha
-            tabla.RowGroups.Add(new TableRowGroup());
-
-            TableRow header = new TableRow() { Background = Brushes.LightGray };
-            header.Cells.Add(new TableCell(new Paragraph(new Run("Otorgante")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            header.Cells.Add(new TableCell(new Paragraph(new Run("Operación")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            header.Cells.Add(new TableCell(new Paragraph(new Run("No. Escritura")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            header.Cells.Add(new TableCell(new Paragraph(new Run("Fecha")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            tabla.RowGroups[0].Rows.Add(header);
-
-            foreach (RegistroIndice item in DgIndice.ItemsSource)
-            {
-                TableRow fila = new TableRow();
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.Otorgante)) { Padding = new Thickness(5) }));
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.Operacion)) { Padding = new Thickness(5) }));
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.NumeroEscritura)) { Padding = new Thickness(5) }));
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.Fecha.ToString("dd/MM/yyyy"))) { Padding = new Thickness(5) }));
-                tabla.RowGroups[0].Rows.Add(fila);
-            }
-            doc.Blocks.Add(tabla);
-            return doc;
-        }
     }
 
     public class RegistroIndice : INotifyPropertyChanged

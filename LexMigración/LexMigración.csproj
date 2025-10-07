@@ -346,6 +346,15 @@
   <ItemGroup>
     <Resource Include="Assets\notaria215.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\aguilasocho Notaria %282%29.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\aguilasocho_Notaria.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\imagen.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

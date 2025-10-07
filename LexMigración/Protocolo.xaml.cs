@@ -103,47 +103,5 @@ namespace LexMigración
                 MessageBox.Show("Por favor, selecciona un protocolo de la tabla para eliminar.", "Ningún Protocolo Seleccionado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-
-        // --- *** CÓDIGO DE IMPRESIÓN REVERTIDO A LA VERSIÓN ORIGINAL *** ---
-        private void BtnImprimirLista_Click(object sender, RoutedEventArgs e)
-        {
-            PrintDialog printDialog = new PrintDialog();
-            if (printDialog.ShowDialog() == true)
-            {
-                FlowDocument doc = CrearDocumentoProtocolos();
-                IDocumentPaginatorSource idpSource = doc;
-                printDialog.PrintDocument(idpSource.DocumentPaginator, "Listado de Protocolos");
-            }
-        }
-
-        private FlowDocument CrearDocumentoProtocolos()
-        {
-            FlowDocument doc = new FlowDocument();
-            doc.PagePadding = new Thickness(50);
-            doc.Blocks.Add(new Paragraph(new Run("Listado General de Protocolos")) { FontSize = 20, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 20) });
-
-            Table tabla = new Table() { CellSpacing = 0, BorderBrush = Brushes.Gray, BorderThickness = new Thickness(1) };
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(2, GridUnitType.Star) });
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1, GridUnitType.Star) });
-            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1, GridUnitType.Star) });
-            tabla.RowGroups.Add(new TableRowGroup());
-
-            TableRow header = new TableRow() { Background = Brushes.LightGray };
-            header.Cells.Add(new TableCell(new Paragraph(new Run("No. Escritura")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            header.Cells.Add(new TableCell(new Paragraph(new Run("Fecha")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            header.Cells.Add(new TableCell(new Paragraph(new Run("Firmado")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
-            tabla.RowGroups[0].Rows.Add(header);
-
-            foreach (ProtocoloModel item in DgProtocolos.ItemsSource)
-            {
-                TableRow fila = new TableRow();
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.NumeroEscritura)) { Padding = new Thickness(5) }));
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.Fecha.ToString("dd/MM/yyyy"))) { Padding = new Thickness(5) }));
-                fila.Cells.Add(new TableCell(new Paragraph(new Run(item.Firmado ? "Sí" : "No")) { Padding = new Thickness(5) }));
-                tabla.RowGroups[0].Rows.Add(fila);
-            }
-            doc.Blocks.Add(tabla);
-            return doc;
-        }
     }
 }

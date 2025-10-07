@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Gestión de Anexos y Expedientes" Height="700" Width="1200"
+        Title="Gestión de Testimonios y Expedientes" Height="700" Width="1200"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
@@ -22,7 +22,7 @@
 
             <Border Grid.Row="0" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,20">
                 <StackPanel>
-                    <TextBlock Text="📄 Registro de Anexo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
+                    <TextBlock Text="📄 Registro de Testimonio" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -32,7 +32,7 @@
                             <Label Content="Expediente Asociado"/>
                             <ComboBox Name="CbExpediente" DisplayMemberPath="Identificador" SelectedValuePath="Identificador" Margin="0,0,0,10"/>
 
-                            <Label Content="Estado del Anexo" Margin="0,5,0,0"/>
+                            <Label Content="Estado del Testimonio" Margin="0,5,0,0"/>
                             <ComboBox Name="CbEstado" Margin="0,0,0,10">
                                 <ComboBoxItem Content="Listo"/>
                                 <ComboBoxItem Content="Faltante"/>
@@ -55,7 +55,7 @@
                             <Label Content="Libro" Margin="0,5,0,0"/>
                             <TextBox Name="TxtLibro" Margin="0,0,0,10" PreviewTextInput="NumberValidationTextBox"/>
 
-                            <Label Content="No.Escritura" Margin="0,5,0,0"/>
+                            <Label Content="No. Escritura" Margin="0,5,0,0"/>
                             <TextBox Name="TxtNumeroEscritura" Margin="0,0,0,10" PreviewTextInput="NumberValidationTextBox"/>
                         </StackPanel>
                     </Grid>
@@ -68,7 +68,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Anexos Guardados" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="0" Text="Testimonios Guardados" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
                 <DataGrid Grid.Row="1" Name="DgAnexos" AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="DgAnexos_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
@@ -81,9 +81,9 @@
                 </DataGrid>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,15,0,0" >
-                    <Button Name="BtnGuardar" Content="Guardar Nuevo Anexo" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
-                    <Button Name="BtnEliminar" Content="Eliminar Anexo" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminar_Click"/>
-                    <Button Name="BtnImprimirLista" Content="Imprimir Lista" Style="{StaticResource SecondaryButtonStyle}" Click="BtnImprimirLista_Click"/>
+                    <Button Name="BtnGuardar" Content="Guardar Nuevo Testimonio" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardar_Click"/>
+                    <Button Name="BtnEliminar" Content="Eliminar Testimonio" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminar_Click"/>
+                    <Button x:Name="BtnMigrar" Content="🔄 Migrar a Protocolo/Índice" Style="{StaticResource SecondaryButtonStyle}" Click="BtnMigrar_Click" Width="175"/>
                 </StackPanel>
             </Grid>
         </Grid>

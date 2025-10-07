@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 
-// --- LÍNEA CORREGIDA ---
-// Asegúrate de que el namespace tenga la tilde, igual que en tus otros archivos.
 namespace LexMigración
 {
     public partial class MainWindow : Window
@@ -12,8 +10,7 @@ namespace LexMigración
         private Anexo_A anexoWindow;
         private Protocolo protocoloWindow;
         private Indice indiceWindow;
-        private Panel_Migraciones migracionesWindow;
-        private ExpedientesWindow expedientesWindow; // --- Variable para la nueva ventana ---
+        private ExpedientesWindow expedientesWindow; // Variable para la nueva ventana
 
         public MainWindow(string nombreUsuario)
         {
@@ -28,10 +25,10 @@ namespace LexMigración
         private void InitializeButtons()
         {
             BtnAnexos.Click += BtnAnexos_Click;
-            BtnExpedientes.Click += BtnExpedientes_Click; // --- Conexión del nuevo botón ---
+            BtnExpedientes.Click += BtnExpedientes_Click; // Conexión del nuevo botón
             BtnProtocolos.Click += BtnProtocolos_Click;
             BtnIndice.Click += BtnIndice_Click;
-            BtnMigraciones.Click += BtnMigraciones_Click;
+            // La línea de BtnMigraciones.Click ha sido eliminada.
         }
 
         // --- MÉTODOS COMPLETOS PARA LA NAVEGACIÓN ---
@@ -45,9 +42,6 @@ namespace LexMigración
             anexoWindow.Show();
             anexoWindow.Activate();
         }
-        // Archivo: LexMigración/MainWindow.xaml.cs
-
-        // ... (dentro de la clase MainWindow)
 
         // --- NUEVO MÉTODO PARA CERRAR SESIÓN Y VOLVER AL LOGIN ---
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
@@ -62,7 +56,6 @@ namespace LexMigración
             // Cierra la ventana principal (MainWindow)
             this.Close();
         }
-        // ...
 
         // --- MÉTODO NUEVO PARA EL BOTÓN DE EXPEDIENTES ---
         private void BtnExpedientes_Click(object sender, RoutedEventArgs e)
@@ -98,31 +91,21 @@ namespace LexMigración
             indiceWindow.Activate();
         }
 
-        private void BtnMigraciones_Click(object sender, RoutedEventArgs e)
-        {
-            CloseOtherWindows("Migraciones");
-            if (migracionesWindow == null || !migracionesWindow.IsLoaded)
-            {
-                migracionesWindow = new Panel_Migraciones();
-            }
-            migracionesWindow.Show();
-            migracionesWindow.Activate();
-        }
+        // El método BtnMigraciones_Click ha sido eliminado.
 
         private void CloseOtherWindows(string except)
         {
             if (except != "Anexo" && anexoWindow != null && anexoWindow.IsLoaded) anexoWindow.Close();
-            if (except != "Expedientes" && expedientesWindow != null && expedientesWindow.IsLoaded) expedientesWindow.Close(); // --- Línea para cerrar la ventana de expedientes ---
+            if (except != "Expedientes" && expedientesWindow != null && expedientesWindow.IsLoaded) expedientesWindow.Close();
             if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded) protocoloWindow.Close();
             if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded) indiceWindow.Close();
-            if (except != "Migraciones" && migracionesWindow != null && migracionesWindow.IsLoaded) migracionesWindow.Close();
+            // La condición para cerrar la ventana de migraciones ha sido eliminada.
         }
 
         // --- Métodos para controlar la ventana ---
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
         private void MaximizeRestoreWindow_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e) => this.Close();
 
