@@ -77,7 +77,7 @@
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="700"/>
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Column="0" Margin="0,0,20,0">
@@ -99,7 +99,7 @@
                     <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
                     <DataGridTextColumn Header="No. Escritura" Binding="{Binding NumeroEscritura}" Width="*"/>
                     <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=d}" Width="*"/>
-                    <DataGridCheckBoxColumn Header="Firmado" Binding="{Binding Firmado}" Width="Auto"/>
+                    
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
@@ -107,10 +107,10 @@
         <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
             <StackPanel>
                 <TextBlock Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
-                <Label Content="Extracto del Documento"/>
-                <TextBox Name="TxtExtracto" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
-                <Label Content="Texto Completo"/>
-                <TextBox Name="TxtTextoCompleto" Height="150" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <Label Content="Contenido del Documento Migrado" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox Name="TxtTextoCompleto" Height="300" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
                 <CheckBox Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
 
                 <StackPanel Orientation="Horizontal">

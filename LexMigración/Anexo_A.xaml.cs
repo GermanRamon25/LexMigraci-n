@@ -3,8 +3,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media; // Agregado para impresión
-using System.Windows.Documents; // Agregado para impresión
+using System.Windows.Media;
+using System.Windows.Documents;
 using LexMigración.Models;
 using LexMigración.Services;
 using DocumentFormat.OpenXml.Packaging;
@@ -27,22 +27,41 @@ namespace LexMigración
             CargarAnexos();
         }
 
+        // --- MÉTODO DE EXTRACCIÓN DE TEXTO MEJORADO PARA PRESERVAR PÁRRAFOS ---
+        private string ExtractTextFromWord(string filePath)
+        {
+            var textBuilder = new System.Text.StringBuilder();
+            try
+            {
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
+                {
+                    // Itera sobre cada elemento de párrafo (<w:p>) en el cuerpo del documento.
+                    foreach (var paragraph in wordDoc.MainDocumentPart.Document.Body.Elements<Paragraph>())
+                    {
+                        string text = paragraph.InnerText;
+
+                        if (!string.IsNullOrEmpty(text.Trim()))
+                        {
+                            // 🚨 CORRECCIÓN CLAVE: Agrega doble salto de línea para preservar el espaciado.
+                            textBuilder.AppendLine(text);
+                            textBuilder.AppendLine();
+                        }
+                    }
+                    // Quitar saltos de línea al inicio/fin
+                    return textBuilder.ToString().Trim();
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Error al leer el documento: {ex.Message}";
+            }
+        }
+
         // --- LÓGICA DE DOCUMENTOS Y VISUALIZACIÓN ---
         private void CargarExpedientes()
         {
             try { CbExpediente.ItemsSource = _dbService.ObtenerExpedientes(); }
             catch (Exception ex) { MessageBox.Show("Error al cargar expedientes: " + ex.Message); }
-        }
-
-        private string ExtractTextFromWord(string filePath)
-        {
-            try
-            {
-                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
-                { return wordDoc.MainDocumentPart.Document.Body.InnerText; }
-            }
-            catch (Exception ex)
-            { return $"Error al leer el documento: {ex.Message}"; }
         }
 
         private void BtnAgregarDocumento_Click(object sender, RoutedEventArgs e)
@@ -53,9 +72,15 @@ namespace LexMigración
                 _nombreArchivoSeleccionado = Path.GetFileName(dlg.FileName);
                 TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
                 string extension = Path.GetExtension(dlg.FileName).ToLower();
-                if (extension == ".txt") _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
-                else if (extension == ".docx") _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
-                else _contenidoArchivoSeleccionado = null;
+
+                // Usa el método mejorado para documentos .docx
+                if (extension == ".txt")
+                    _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
+                else if (extension == ".docx")
+                    _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
+                else
+                    _contenidoArchivoSeleccionado = null;
+
                 TxtEditorContenido.Text = _contenidoArchivoSeleccionado ?? $"Vista previa no disponible para '{extension}'.";
             }
         }
@@ -157,12 +182,12 @@ namespace LexMigración
             }
         }
 
-        // --- LÓGICA DE MIGRACIÓN CORREGIDA (Elimina la generación de TEMP-ANEXO) ---
+        // --- LÓGICA DE MIGRACIÓN CORREGIDA (SOLO USA VALOR REAL) ---
         private void BtnMigrar_Click(object sender, RoutedEventArgs e)
         {
             if (DgAnexos.SelectedItem is Anexo testimonioSeleccionado)
             {
-                // 🚨 CLAVE: Usamos el número REAL del testimonio seleccionado 🚨
+                // 🚨 Se usa el número REAL del testimonio seleccionado 🚨
                 string numeroEscrituraFinal = testimonioSeleccionado.NumeroEscritura;
 
                 if (string.IsNullOrEmpty(numeroEscrituraFinal))
@@ -193,9 +218,12 @@ namespace LexMigración
                         {
                             ExpedienteId = testimonioSeleccionado.ExpedienteId,
                             Fecha = testimonioSeleccionado.CreatedAt,
-                            NumeroEscritura = numeroEscrituraFinal, // 🚨 ASIGNACIÓN DEL VALOR REAL
+                            NumeroEscritura = numeroEscrituraFinal, // ASIGNACIÓN DEL VALOR REAL
+
+                            // 🚨 CLAVE: Migra el contenido completo tal como fue extraído (con saltos de párrafo)
                             Extracto = !string.IsNullOrEmpty(testimonioSeleccionado.ContenidoArchivo) ? new string(testimonioSeleccionado.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
                             TextoCompleto = testimonioSeleccionado.ContenidoArchivo,
+
                             Firmado = false,
                             Volumen = testimonioSeleccionado.Volumen,
                             Libro = testimonioSeleccionado.Libro,
@@ -251,7 +279,7 @@ namespace LexMigración
             }
         }
 
-        // --- CÓDIGO DE IMPRESIÓN (REQUERIDO PARA COMPLETITUD) ---
+        // --- CÓDIGO DE IMPRESIÓN ---
         private void BtnImprimirLista_Click(object sender, RoutedEventArgs e)
         {
             PrintDialog printDialog = new PrintDialog();
@@ -290,7 +318,7 @@ namespace LexMigración
                 fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.NumeroEscritura ?? "N/A")) { Padding = new Thickness(5) }));
                 fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.NombreArchivo ?? "N/A")) { Padding = new Thickness(5) }));
                 tabla.RowGroups[0].Rows.Add(fila);
-            }  
+            }
             doc.Blocks.Add(tabla);
             return doc;
         }
