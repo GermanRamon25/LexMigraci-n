@@ -85,7 +85,7 @@ namespace LexMigración
                 Volumen = "",
                 Libro = "",
                 Fecha = DateTime.Today,
-                Folio = ""
+                
             };
             _registrosEnMemoria.Add(nuevoRegistro);
             DgIndice.SelectedItem = nuevoRegistro;
@@ -136,7 +136,7 @@ namespace LexMigración
         private string _volumen;
         private string _libro;
         private DateTime _fecha;
-        private string _folio;
+        
 
         public string Otorgante
         {
@@ -168,11 +168,7 @@ namespace LexMigración
             get => _fecha;
             set { _fecha = value; OnPropertyChanged(); }
         }
-        public string Folio
-        {
-            get => _folio;
-            set { _folio = value; OnPropertyChanged(); }
-        }
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

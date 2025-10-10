@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media; // Agregado para impresión
+using System.Windows.Documents; // Agregado para impresión
 using LexMigración.Models;
 using LexMigración.Services;
 using DocumentFormat.OpenXml.Packaging;
@@ -13,7 +15,6 @@ namespace LexMigración
 {
     public partial class Anexo_A : Window
     {
-        // ... (propiedades y constructor no cambian) ...
         private readonly DatabaseService _dbService;
         private string _nombreArchivoSeleccionado;
         private string _contenidoArchivoSeleccionado;
@@ -26,101 +27,7 @@ namespace LexMigración
             CargarAnexos();
         }
 
-        // ... (Todos los métodos existentes como Guardar, Eliminar, Cargar, etc., se mantienen igual) ...
-
-        // --- *** NUEVO MÉTODO PARA LA MIGRACIÓN *** ---
-        private void BtnMigrar_Click(object sender, RoutedEventArgs e)
-        {
-            // 1. Validar que se haya seleccionado un testimonio
-            if (DgAnexos.SelectedItem is Anexo testimonioSeleccionado)
-            {
-                // 2. Mostrar mensaje de confirmación
-                MessageBoxResult confirmacion = MessageBox.Show(
-                    $"¿Estás seguro de que deseas migrar el testimonio para el expediente '{testimonioSeleccionado.ExpedienteId}' a Protocolo e Índice?\n\nEsta acción no se puede deshacer.",
-                    "Confirmar Migración",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (confirmacion == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        // 3. Lógica de Migración
-                        // Se crea un identificador único para evitar duplicados
-                        string numeroEscrituraUnico = $"TEMP-ANEXO-{testimonioSeleccionado.Id}";
-
-                        // Validar si ya fue migrado a Protocolo
-                        if (_dbService.ObtenerProtocolos().Any(p => p.NumeroEscritura == numeroEscrituraUnico))
-                        {
-                            MessageBox.Show("Este testimonio ya fue migrado anteriormente a Protocolo.", "Migración Omitida", MessageBoxButton.OK, MessageBoxImage.Information);
-                            return;
-                        }
-
-                        // --- Migración a Protocolo ---
-                        var nuevoProtocolo = new ProtocoloModel
-                        {
-                            ExpedienteId = testimonioSeleccionado.ExpedienteId,
-                            Fecha = testimonioSeleccionado.CreatedAt,
-                            NumeroEscritura = numeroEscrituraUnico,
-                            Extracto = !string.IsNullOrEmpty(testimonioSeleccionado.ContenidoArchivo) ? new string(testimonioSeleccionado.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
-                            TextoCompleto = testimonioSeleccionado.ContenidoArchivo,
-                            Firmado = false,
-                            Volumen = testimonioSeleccionado.Volumen,
-                            Libro = testimonioSeleccionado.Libro,
-                            Folio = testimonioSeleccionado.NumeroEscritura
-                        };
-                        _dbService.GuardarProtocolo(nuevoProtocolo);
-
-                        // --- Migración a Índice ---
-                        var expedienteAsociado = _dbService.ObtenerExpedientes().FirstOrDefault(exp => exp.Identificador == nuevoProtocolo.ExpedienteId);
-                        string otorgante = expedienteAsociado?.NombreCliente ?? "DESCONOCIDO";
-                        string operacion = expedienteAsociado?.TipoCaso ?? "NO ESPECIFICADA";
-
-                        var nuevoRegistroIndice = new RegistroIndice
-                        {
-                            NumeroEscritura = nuevoProtocolo.NumeroEscritura,
-                            Fecha = nuevoProtocolo.Fecha,
-                            Otorgante = otorgante,
-                            Operacion = operacion,
-                            Volumen = nuevoProtocolo.Volumen,
-                            Libro = nuevoProtocolo.Libro,
-                            Folio = nuevoProtocolo.Folio
-                        };
-                        _dbService.GuardarRegistroIndice(nuevoRegistroIndice);
-
-                        MessageBox.Show("¡Migración completada exitosamente!\nSe ha creado una entrada en Protocolo y en Índice.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Ocurrió un error durante la migración: " + ex.Message, "Error Fatal", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-            else
-            {
-                // Si no hay nada seleccionado
-                MessageBox.Show("Por favor, selecciona un testimonio de la lista para poder migrarlo.", "Ningún Testimonio Seleccionado", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-        private void NumberValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            // Verifica si el carácter es un número (0-9)
-            if (!char.IsDigit(e.Text, e.Text.Length - 1))
-            {
-                e.Handled = true; // Ignora el carácter si no es un dígito
-            }
-        }
-
-        private void AlphanumericValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            // Verifica si el carácter es una letra o un dígito
-            if (!char.IsLetterOrDigit(e.Text, e.Text.Length - 1))
-            {
-                e.Handled = true; // Ignora el carácter si no es alfanumérico
-            }
-        }
-
-        // ... (Todos los métodos como CargarExpedientes, Guardar, Eliminar, etc. no cambian)
+        // --- LÓGICA DE DOCUMENTOS Y VISUALIZACIÓN ---
         private void CargarExpedientes()
         {
             try { CbExpediente.ItemsSource = _dbService.ObtenerExpedientes(); }
@@ -158,6 +65,8 @@ namespace LexMigración
             try { DgAnexos.ItemsSource = _dbService.ObtenerAnexos(); }
             catch (Exception ex) { MessageBox.Show("Error al cargar anexos: " + ex.Message); }
         }
+
+        // --- MANEJO DE FORMULARIO Y VALIDACIÓN ---
 
         private void LimpiarFormulario()
         {
@@ -205,11 +114,7 @@ namespace LexMigración
                     CreatedAt = DateTime.Today,
                     Volumen = TxtVolumen.Text,
                     Libro = TxtLibro.Text,
-                    // 🚨 CORRECCIÓN FINAL: Usamos la nueva propiedad NumeroEscritura
-                    NumeroEscritura = TxtNumeroEscritura.Text
-
-                    // *** SE ELIMINAN TODAS LAS LÍNEAS DE FOLIO/FOLIADO INICIO/FIN/TOTALHOJAS ***
-                    // Ya no son necesarias ni en el modelo ni en la base de datos.
+                    NumeroEscritura = TxtNumeroEscritura.Text // Usamos el valor real del campo de entrada
                 };
                 _dbService.GuardarAnexo(nuevoAnexo);
                 MessageBox.Show("Anexo guardado exitosamente.", "Éxito");
@@ -218,6 +123,7 @@ namespace LexMigración
             }
             catch (Exception ex) { MessageBox.Show("Error al guardar el anexo: " + ex.Message, "Error"); }
         }
+
         private void BtnActualizarContenido_Click(object sender, RoutedEventArgs e)
         {
             if (DgAnexos.SelectedItem is Anexo anexoSeleccionado)
@@ -249,6 +155,144 @@ namespace LexMigración
                     catch (Exception ex) { MessageBox.Show("Error al eliminar: " + ex.Message, "Error"); }
                 }
             }
+        }
+
+        // --- LÓGICA DE MIGRACIÓN CORREGIDA (Elimina la generación de TEMP-ANEXO) ---
+        private void BtnMigrar_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgAnexos.SelectedItem is Anexo testimonioSeleccionado)
+            {
+                // 🚨 CLAVE: Usamos el número REAL del testimonio seleccionado 🚨
+                string numeroEscrituraFinal = testimonioSeleccionado.NumeroEscritura;
+
+                if (string.IsNullOrEmpty(numeroEscrituraFinal))
+                {
+                    MessageBox.Show("El testimonio seleccionado no tiene un número de escritura válido. Por favor, edítalo y guarda el número real antes de migrar.", "Dato Faltante", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                MessageBoxResult confirmacion = MessageBox.Show(
+                    $"¿Estás seguro de que deseas migrar el testimonio para el expediente '{testimonioSeleccionado.ExpedienteId}' (No. {numeroEscrituraFinal}) a Protocolo e Índice?\n\nEsta acción no se puede deshacer.",
+                    "Confirmar Migración",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (confirmacion == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Validar si ya fue migrado a Protocolo (usando el número REAL)
+                        if (_dbService.ObtenerProtocolos().Any(p => p.NumeroEscritura == numeroEscrituraFinal))
+                        {
+                            MessageBox.Show($"Este testimonio ya fue migrado anteriormente a Protocolo con el No. {numeroEscrituraFinal}.", "Migración Omitida", MessageBoxButton.OK, MessageBoxImage.Information);
+                            return;
+                        }
+
+                        // --- Migración a Protocolo ---
+                        var nuevoProtocolo = new ProtocoloModel
+                        {
+                            ExpedienteId = testimonioSeleccionado.ExpedienteId,
+                            Fecha = testimonioSeleccionado.CreatedAt,
+                            NumeroEscritura = numeroEscrituraFinal, // 🚨 ASIGNACIÓN DEL VALOR REAL
+                            Extracto = !string.IsNullOrEmpty(testimonioSeleccionado.ContenidoArchivo) ? new string(testimonioSeleccionado.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
+                            TextoCompleto = testimonioSeleccionado.ContenidoArchivo,
+                            Firmado = false,
+                            Volumen = testimonioSeleccionado.Volumen,
+                            Libro = testimonioSeleccionado.Libro,
+                        };
+                        _dbService.GuardarProtocolo(nuevoProtocolo);
+
+                        // --- Migración a Índice ---
+                        var expedienteAsociado = _dbService.ObtenerExpedientes().FirstOrDefault(exp => exp.Identificador == nuevoProtocolo.ExpedienteId);
+                        string otorgante = expedienteAsociado?.NombreCliente ?? "DESCONOCIDO";
+                        string operacion = expedienteAsociado?.TipoCaso ?? "NO ESPECIFICADA";
+
+                        var nuevoRegistroIndice = new RegistroIndice
+                        {
+                            NumeroEscritura = nuevoProtocolo.NumeroEscritura, // Usa el número real
+                            Fecha = nuevoProtocolo.Fecha,
+                            Otorgante = otorgante,
+                            Operacion = operacion,
+                            Volumen = nuevoProtocolo.Volumen,
+                            Libro = nuevoProtocolo.Libro,
+
+                        };
+                        _dbService.GuardarRegistroIndice(nuevoRegistroIndice);
+
+                        MessageBox.Show("¡Migración completada exitosamente!\nSe ha creado una entrada en Protocolo y en Índice.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ocurrió un error durante la migración: " + ex.Message, "Error Fatal", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                // Si no hay nada seleccionado
+                MessageBox.Show("Por favor, selecciona un testimonio de la lista para poder migrarlo.", "Ningún Testimonio Seleccionado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        // --- VALIDACIONES DE ENTRADA ---
+        private void NumberValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (!char.IsDigit(e.Text, e.Text.Length - 1))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void AlphanumericValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (!char.IsLetterOrDigit(e.Text, e.Text.Length - 1))
+            {
+                e.Handled = true;
+            }
+        }
+
+        // --- CÓDIGO DE IMPRESIÓN (REQUERIDO PARA COMPLETITUD) ---
+        private void BtnImprimirLista_Click(object sender, RoutedEventArgs e)
+        {
+            PrintDialog printDialog = new PrintDialog();
+            if (printDialog.ShowDialog() == true)
+            {
+                FlowDocument doc = CrearDocumentoAnexos();
+                IDocumentPaginatorSource idpSource = doc;
+                printDialog.PrintDocument(idpSource.DocumentPaginator, "Listado de Anexos");
+            }
+        }
+
+        private FlowDocument CrearDocumentoAnexos()
+        {
+            FlowDocument doc = new FlowDocument();
+            doc.Blocks.Add(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run("Listado General de Anexos")) { FontSize = 20, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 20) });
+
+            System.Windows.Documents.Table tabla = new System.Windows.Documents.Table() { CellSpacing = 0, BorderBrush = Brushes.Gray, BorderThickness = new Thickness(1) };
+            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1.5, GridUnitType.Star) });
+            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1, GridUnitType.Star) });
+            tabla.Columns.Add(new TableColumn() { Width = new GridLength(1.5, GridUnitType.Star) });
+            tabla.Columns.Add(new TableColumn() { Width = new GridLength(2, GridUnitType.Star) });
+            tabla.RowGroups.Add(new TableRowGroup());
+
+            System.Windows.Documents.TableRow header = new System.Windows.Documents.TableRow() { Background = Brushes.LightGray };
+            header.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run("Expediente")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
+            header.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run("Estado")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
+            header.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run("No. Escritura")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
+            header.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run("Archivo Adjunto")) { FontWeight = FontWeights.Bold, Padding = new Thickness(5) }));
+            tabla.RowGroups[0].Rows.Add(header);
+
+            foreach (Anexo item in DgAnexos.ItemsSource)
+            {
+                System.Windows.Documents.TableRow fila = new System.Windows.Documents.TableRow();
+                fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.ExpedienteId)) { Padding = new Thickness(5) }));
+                fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.Estado)) { Padding = new Thickness(5) }));
+                fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.NumeroEscritura ?? "N/A")) { Padding = new Thickness(5) }));
+                fila.Cells.Add(new System.Windows.Documents.TableCell(new System.Windows.Documents.Paragraph(new System.Windows.Documents.Run(item.NombreArchivo ?? "N/A")) { Padding = new Thickness(5) }));
+                tabla.RowGroups[0].Rows.Add(fila);
+            }  
+            doc.Blocks.Add(tabla);
+            return doc;
         }
     }
 }

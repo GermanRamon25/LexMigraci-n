@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.Generic;
 
 namespace LexMigración
 {
@@ -27,7 +28,7 @@ namespace LexMigración
             LstLogMigraciones.Items.Insert(0, item);
         }
 
-        // --- *** LÓGICA DE MIGRACIÓN 1 ACTUALIZADA *** ---
+        // --- LÓGICA DE MIGRACIÓN 1 CORREGIDA: USA EL NÚMERO DE ESCRITURA REAL (Y NO EL TEMPORAL) ---
         private void BtnMigrarAnexoProtocolo_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -42,13 +43,14 @@ namespace LexMigración
 
                 foreach (var anexo in anexos)
                 {
-                    // Creamos un identificador único para el protocolo basado en el ID del anexo.
-                    string numeroEscrituraUnico = $"TEMP-ANEXO-{anexo.Id}";
+                    // 🚨 CORRECCIÓN CLAVE: Usamos el número REAL (anexo.NumeroEscritura). 
+                    // Si el usuario lo dejó vacío, usamos un fallback, NO el TEMP-ANEXO-X.
+                    string numeroEscrituraFinal = string.IsNullOrEmpty(anexo.NumeroEscritura) ?
+                        $"FALLBACK-{anexo.Id}" : anexo.NumeroEscritura;
 
-                    // CAMBIO CLAVE: Ahora buscamos si ya existe un protocolo con este ID único.
-                    if (protocolosExistentes.Any(p => p.NumeroEscritura == numeroEscrituraUnico))
+                    if (protocolosExistentes.Any(p => p.NumeroEscritura == numeroEscrituraFinal))
                     {
-                        Log($"⚠️  Se omitió Anexo ID:{anexo.Id} para '{anexo.ExpedienteId}' (ya fue migrado).");
+                        Log($"⚠️  Se omitió Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') (ya existe como escritura: {numeroEscrituraFinal}).");
                         migracionesOmitidas++;
                         continue;
                     }
@@ -57,17 +59,17 @@ namespace LexMigración
                     {
                         ExpedienteId = anexo.ExpedienteId,
                         Fecha = anexo.CreatedAt,
-                        // Usamos el identificador único que creamos.
-                        NumeroEscritura = numeroEscrituraUnico,
+                        // Usamos el número de escritura real.
+                        NumeroEscritura = numeroEscrituraFinal,
                         Extracto = !string.IsNullOrEmpty(anexo.ContenidoArchivo) ? new string(anexo.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
                         TextoCompleto = anexo.ContenidoArchivo,
                         Firmado = false,
                         Volumen = anexo.Volumen,
                         Libro = anexo.Libro,
-                        Folio = anexo.NumeroEscritura
+                        // Folio ya fue eliminado del modelo ProtocoloModel
                     };
                     _dbService.GuardarProtocolo(nuevoProtocolo);
-                    Log($"✔️  Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') migrado exitosamente.");
+                    Log($"✔️  Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') migrado exitosamente con No. {numeroEscrituraFinal}.");
                     migracionesExitosas++;
                 }
 
@@ -81,26 +83,54 @@ namespace LexMigración
             }
         }
 
-        // (El resto del archivo no necesita cambios)
+        // --- LÓGICA DE MIGRACIÓN 2: PURGA Y RECONSTRUCCIÓN DEL ÍNDICE ---
         private void BtnMigrarProtocoloIndice_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 LstLogMigraciones.Items.Clear();
-                Log("Iniciando migración de Protocolo a Índice...");
+                Log("Iniciando purga de datos del Índice y reconstrucción...");
 
-                var protocolos = _dbService.ObtenerProtocolos();
-                var indicesExistentes = _dbService.ObtenerRegistrosIndice();
+                var protocolos = _dbService.ObtenerProtocolos().ToList();
+                var indicesExistentes = _dbService.ObtenerRegistrosIndice().ToList();
                 var expedientes = _dbService.ObtenerExpedientes();
-                int migracionesExitosas = 0;
-                int migracionesOmitidas = 0;
 
+                int protocolosEliminados = 0;
+                int indicesEliminados = 0;
+                int migracionesExitosas = 0;
+
+                // 1. PURGA TOTAL DE DATOS TEMPORALES EN ORIGEN Y DESTINO
+
+                // Eliminamos registros Protocolo TEMPORALES de la fuente (ya no deberían crearse, pero limpiamos los antiguos).
+                Log("1. Limpiando protocolos temporales de la fuente...");
+                foreach (var protocolo in protocolos.Where(p => p.NumeroEscritura != null && p.NumeroEscritura.StartsWith("TEMP-ANEXO-")).ToList())
+                {
+                    _dbService.EliminarProtocolo(protocolo);
+                    protocolosEliminados++;
+                }
+                Log($"🗑️ {protocolosEliminados} protocolos temporales eliminados del origen.");
+
+                // Eliminamos TODOS los registros del Índice para reconstruir desde cero.
+                Log("2. Eliminando TODOS los registros de Índice para reconstrucción...");
+                foreach (var indice in indicesExistentes)
+                {
+                    _dbService.EliminarRegistroIndice(indice);
+                    indicesEliminados++;
+                }
+                Log($"🗑️ {indicesEliminados} registros de Índice eliminados.");
+
+                // Volvemos a obtener Protocolos, ahora limpios.
+                indicesExistentes = _dbService.ObtenerRegistrosIndice();
+                protocolos = _dbService.ObtenerProtocolos().ToList();
+
+                // 3. MIGRACIÓN FINAL (Protocolo → Índice)
+                Log("3. Migrando Protocolos limpios al Índice...");
                 foreach (var protocolo in protocolos)
                 {
-                    if (indicesExistentes.Any(i => i.NumeroEscritura == protocolo.NumeroEscritura))
+                    string numeroEscrituraFinal = protocolo.NumeroEscritura;
+
+                    if (indicesExistentes.Any(i => i.NumeroEscritura == numeroEscrituraFinal))
                     {
-                        Log($"⚠️  Se omitió Protocolo '{protocolo.NumeroEscritura}' (ya existe en el Índice).");
-                        migracionesOmitidas++;
                         continue;
                     }
 
@@ -110,21 +140,20 @@ namespace LexMigración
 
                     var nuevoRegistro = new RegistroIndice
                     {
-                        NumeroEscritura = protocolo.NumeroEscritura,
+                        NumeroEscritura = numeroEscrituraFinal,
                         Fecha = protocolo.Fecha,
                         Otorgante = otorgante,
                         Operacion = operacion,
                         Volumen = protocolo.Volumen,
-                        Libro = protocolo.Libro,
-                        Folio = protocolo.Folio
+                        Libro = protocolo.Libro
                     };
 
                     _dbService.GuardarRegistroIndice(nuevoRegistro);
-                    Log($"✔️  Protocolo '{protocolo.NumeroEscritura}' migrado al Índice exitosamente.");
+                    Log($"✔️  Protocolo '{numeroEscrituraFinal}' migrado al Índice exitosamente.");
                     migracionesExitosas++;
                 }
 
-                Log($"--- Migración finalizada. {migracionesExitosas} registros creados en el índice, {migracionesOmitidas} omitidos. ---");
+                Log($"--- Proceso finalizado. {migracionesExitosas} registros migrados/creados. ---");
                 MessageBox.Show("Proceso finalizado. Revisa el log para detalles.", "Proceso Terminado");
             }
             catch (Exception ex)

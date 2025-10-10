@@ -115,7 +115,7 @@
                 <DataGridTextColumn Header="VOLUMEN" Binding="{Binding Volumen, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 <DataGridTextColumn Header="LIBRO" Binding="{Binding Libro, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 <DataGridTextColumn Header="FECHA" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
-                <DataGridTextColumn Header="FOLIO" Binding="{Binding Folio, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+              
             </DataGrid.Columns>
         </DataGrid>
 

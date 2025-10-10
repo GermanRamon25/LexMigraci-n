@@ -11,10 +11,8 @@ namespace LexMigración.Models
         public DateTime CreatedAt { get; set; }
         public string NombreArchivo { get; set; }
         public string ContenidoArchivo { get; set; }
-
-        // --- *** NUEVOS CAMPOS AÑADIDOS *** ---
         public string Volumen { get; set; }
         public string Libro { get; set; }
-       // public string Folio { get; set; }
+       
     }
 }
