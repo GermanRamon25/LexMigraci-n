@@ -1,4 +1,4 @@
-﻿<Window x:Class="LexMigración.RegistroWindow"
+﻿  <Window x:Class="LexMigración.RegistroWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Registrar Nuevo Usuario" Height="550" Width="420" WindowStartupLocation="CenterScreen" 

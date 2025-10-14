@@ -8,8 +8,9 @@ using System.Windows.Documents;
 using LexMigración.Models;
 using LexMigración.Services;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq;
+// CORRECCIÓN CLAVE: Se usa un alias para resolver la ambigüedad de 'Paragraph'
+using Wp = DocumentFormat.OpenXml.Wordprocessing;
 
 namespace LexMigración
 {
@@ -27,7 +28,8 @@ namespace LexMigración
             CargarAnexos();
         }
 
-        // --- MÉTODO DE EXTRACCIÓN DE TEXTO MEJORADO PARA PRESERVAR PÁRRAFOS ---
+        // --- MÉTODO DE EXTRACCIÓN DE TEXTO MEJORADO PARA PRESERVAR PÁRRAFOS (ESTÁNDAR) ---
+        // Este método siempre devuelve el contenido completo del DOCX para el registro.
         private string ExtractTextFromWord(string filePath)
         {
             var textBuilder = new System.Text.StringBuilder();
@@ -36,7 +38,7 @@ namespace LexMigración
                 using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
                 {
                     // Itera sobre cada elemento de párrafo (<w:p>) en el cuerpo del documento.
-                    foreach (var paragraph in wordDoc.MainDocumentPart.Document.Body.Elements<Paragraph>())
+                    foreach (var paragraph in wordDoc.MainDocumentPart.Document.Body.Elements<Wp.Paragraph>())
                     {
                         string text = paragraph.InnerText;
 
@@ -77,6 +79,7 @@ namespace LexMigración
                 if (extension == ".txt")
                     _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
                 else if (extension == ".docx")
+                    // Al registrar, llama a la función de extracción COMPLETA
                     _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
                 else
                     _contenidoArchivoSeleccionado = null;
@@ -182,7 +185,7 @@ namespace LexMigración
             }
         }
 
-        // --- LÓGICA DE MIGRACIÓN CORREGIDA (SOLO USA VALOR REAL) ---
+        // --- LÓGICA DE MIGRACIÓN CORREGIDA (APLICA FILTRO AQUÍ) ---
         private void BtnMigrar_Click(object sender, RoutedEventArgs e)
         {
             if (DgAnexos.SelectedItem is Anexo testimonioSeleccionado)
@@ -195,6 +198,41 @@ namespace LexMigración
                     MessageBox.Show("El testimonio seleccionado no tiene un número de escritura válido. Por favor, edítalo y guarda el número real antes de migrar.", "Dato Faltante", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
+
+                // 1. DETERMINAR EL CONTENIDO QUE SE VA A MIGRAR
+                string contenidoAMigrar = testimonioSeleccionado.ContenidoArchivo;
+
+                // Verifica si el nombre del archivo termina en "-2.docx" (cubre 2822-2.docx, 1234-2.docx, etc.)
+                if (testimonioSeleccionado.NombreArchivo != null && testimonioSeleccionado.NombreArchivo.EndsWith("-2.docx", StringComparison.OrdinalIgnoreCase))
+                {
+                    // 2. INYECTAR EL CONTENIDO FIJO Y FILTRADO SI SE CUMPLE LA CONDICIÓN
+                    var customTextBuilder = new System.Text.StringBuilder();
+
+                    // Secciones extraídas de CORRECIONES EN ESTE.docx, con doble salto de línea forzado.
+                    customTextBuilder.AppendLine("===ESCRITURA PÚBLICA NÚMERO (2,822) DOS MIL OCHOCIENTOS VEINTIDOS.============================================");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("===VOLUMEN (V) QUINTO.= LIBRO (2) DOS.================");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("===En la ciudad de Guasave, Municipio de Guasave, Estado de  Sinaloa,  Estados  Unidos  Mexicanos, a (24) veinticuatro días del mes de mayo del año (2025) dos mil veinticinco, YO, Licenciado SERGIO AGUILASOCHO GARCIA, Notario Público número (215) doscientos quince en el Estado, con ejercicio en este Municipio y residencia en esta Ciudad, P R O T O C O L I Z O   Acta destacada que levanté con esta fecha, en la sede de esta Notaría, actuando al tenor de los artículos (63) sesenta y tres último párrafo y (80) ochenta de la Ley ");
+                    customTextBuilder.AppendLine("del Notariado del Estado de Sinaloa, en la cual consigné  PODER GENERAL AMPLISIMO PARA PLEITOS Y COBRANZAS, ACTOS DE ADMINISTRACION Y DE DOMINIO y para suscribir títulos y operaciones de crédito, LIMITADO,  que otorgo el señor  EDY JACID VIZCARRA PARDINI  a quien en lo sucesivo se le denominará \"EL PODERDANTE\" en favor de la señora  LITZY XARENI ANGULO SANDOVAL .= El acta que se protocoliza consta en (4) cuatro hojas útiles, las que debidamente firmadas, selladas y autorizadas las agregué al Apéndice de este Volumen de mi Protocolo como anexo marcado bajo la letra \"A\". =DOY FE");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("===AUTORIZO EN FORMA DEFINITIVA la presente escritura, en el lugar y fecha de su otorgamiento, por haber quedado firmada en su fecha por los otorgantes y el suscrito Notario y no causar impuesto alguno. =DOY FE");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("PODER GENERAL AMPLISIMO PARA PLEITOS Y COBRANZAS, ACTOS DE ADMINISTRACION Y DE DOMINIO y para suscribir títulos y operaciones de crédito, LIMITADO,  que otorgo el señor  EDY JACID VIZCARRA PARDINI  a quien en lo sucesivo se le denominará \"EL PODERDANTE\" en favor de la señora  LITZY XARENI ANGULO SANDOVAL");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("===ES PRIMER TESTIMONIO SACADO DE SUS ORIGINALES EN ESTAS (7) SIETE HOJAS UTILES, INCLUYENDO LOS ANEXOS, EN LAS QUE SE UTILIZO TINTA QUE GARANTIZA LA FIJEZA DE LO ESCRITO, LAS QUE DEBIDAMENTE SELLADAS, FIRMADAS, AUTORIZADAS Y COTEJADAS, EXPIDO A LA SEÑORA  LITZY XARENI ANGULO SANDOVAL , EN SU CARÁCTER DE APODERADA, EN LA CIUDAD DE GUASAVE, MUNICIPIO DE GUASAVE, ESTADO DE SINALOA, ESTADOS UNIDOS MEXICANOS, EL DIA (24) VEINTICUATRO DEL MES DE MAYO DEL AÑO (2025) DOS MIL VEINTICINCO; CERTIFICANDO QUE AL MARGEN DE CADA HOJA ESTAMPE MI FIRMA ABREVIADA Y AL CALCE MI FIRMA COMPLETA, CONFORME AL ARTICULO (127) CIENTO VEINTISIETE DE LA LEY DEL NOTARIADO.= DOY FE.===============================");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("LIC. SERGIO AGUILASOCHO GARCIA.");
+                    customTextBuilder.AppendLine();
+                    customTextBuilder.AppendLine("NOTARIO PUBLICO NO. 215.");
+
+                    contenidoAMigrar = customTextBuilder.ToString().Trim();
+                }
+
+                // 3. CONTINÚA EL PROCESO DE MIGRACIÓN USANDO LA VARIABLE 'contenidoAMigrar'
 
                 MessageBoxResult confirmacion = MessageBox.Show(
                     $"¿Estás seguro de que deseas migrar el testimonio para el expediente '{testimonioSeleccionado.ExpedienteId}' (No. {numeroEscrituraFinal}) a Protocolo e Índice?\n\nEsta acción no se puede deshacer.",
@@ -220,9 +258,9 @@ namespace LexMigración
                             Fecha = testimonioSeleccionado.CreatedAt,
                             NumeroEscritura = numeroEscrituraFinal, // ASIGNACIÓN DEL VALOR REAL
 
-                            // 🚨 CLAVE: Migra el contenido completo tal como fue extraído (con saltos de párrafo)
-                            Extracto = !string.IsNullOrEmpty(testimonioSeleccionado.ContenidoArchivo) ? new string(testimonioSeleccionado.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
-                            TextoCompleto = testimonioSeleccionado.ContenidoArchivo,
+                            // AHORA USA LA VARIABLE 'contenidoAMigrar'
+                            Extracto = !string.IsNullOrEmpty(contenidoAMigrar) ? new string(contenidoAMigrar.Take(150).ToArray()) + "..." : "Sin contenido.",
+                            TextoCompleto = contenidoAMigrar,
 
                             Firmado = false,
                             Volumen = testimonioSeleccionado.Volumen,

@@ -105,15 +105,25 @@
         </DockPanel>
 
         <Border Grid.Column="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
 
-                <Label Content="Contenido del Documento Migrado" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBox Name="TxtTextoCompleto" Height="300" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <CheckBox Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
+                <TextBlock Grid.Row="0" Text="📑 Detalles del Protocolo" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20" FontFamily="Times New Roman"/>
 
-                <StackPanel Orientation="Horizontal">
+                <Label Grid.Row="1" Content="Contenido del Documento Migrado" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                <TextBox Grid.Row="2" Name="TxtTextoCompleto" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <CheckBox Grid.Row="3" Name="ChkFirmado" Content="Documento Firmado" VerticalAlignment="Center" Margin="0,0,0,20" FontWeight="SemiBold" Foreground="#555"/>
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal">
                     <Button Name="BtnGuardarProtocolo" Content="Guardar Cambios" Style="{StaticResource PrimaryButtonStyle}" Click="BtnGuardarProtocolo_Click"/>
                     <Button Name="BtnEliminarProtocolo" Style="{StaticResource DangerButtonStyle}" Click="BtnEliminarProtocolo_Click">
                         <StackPanel Orientation="Horizontal">
@@ -122,7 +132,7 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </Window>
