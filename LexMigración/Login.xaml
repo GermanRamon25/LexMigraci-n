@@ -6,8 +6,7 @@
         WindowStartupLocation="CenterScreen" 
         WindowStyle="None"
         AllowsTransparency="True" 
-        Background="Transparent">
-    <Grid>
+        Background="Transparent"> <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -37,7 +36,7 @@
                 </Border>
 
                 <Grid Grid.Column="1" Background="#F5F5F5">
-
+                    
                     <Button Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" 
                             Width="45" Height="45" 
                             Background="Transparent" Foreground="#555" 
