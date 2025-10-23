@@ -2,7 +2,7 @@
 
 namespace LexMigración.Models
 {
-    public class Anexo
+    public class TestimonioModel
     {
         public int Id { get; set; }
         public string ExpedienteId { get; set; }

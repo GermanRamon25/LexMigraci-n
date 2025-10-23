@@ -141,7 +141,7 @@
                         <TextBlock Text="Expedientes" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="BtnAnexos" Style="{StaticResource NavButtonStyle}">
+                <Button x:Name="BtnTestimonios" Style="{StaticResource NavButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="Segoe UI Symbol" Text="📄" Margin="0,0,15,0" FontSize="18" VerticalAlignment="Center"/>
                         <TextBlock Text="Testimonios" VerticalAlignment="Center"/>

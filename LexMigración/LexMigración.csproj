@@ -247,7 +247,7 @@
       <DependentUpon>20250924202844_CamposDeIndiceAgregados.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\LexMigracionContextModelSnapshot.cs" />
-    <Compile Include="Models\Anexo.cs" />
+    <Compile Include="Models\TestimonioModel.cs" />
     <Compile Include="Models\Expediente.cs" />
     <Compile Include="Models\Protocolo.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -265,7 +265,7 @@
     <Compile Include="SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
-    <Page Include="Anexo_A.xaml">
+    <Page Include="Testimonio.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -285,8 +285,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Anexo_A.xaml.cs">
-      <DependentUpon>Anexo_A.xaml</DependentUpon>
+    <Compile Include="Testimonio.xaml.cs">
+      <DependentUpon>Testimonio.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

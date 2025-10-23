@@ -1,4 +1,4 @@
-﻿<Window x:Class="LexMigración.Anexo_A"
+﻿<Window x:Class="LexMigración.Testimonio"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -69,7 +69,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Testimonios Guardados" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
-                <DataGrid Grid.Row="1" Name="DgAnexos" AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="DgAnexos_SelectionChanged">
+                <DataGrid Grid.Row="1" Name="DgTestimonios" AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="DgTestimonios_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Expediente" Binding="{Binding ExpedienteId}" Width="*"/>
                         <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>

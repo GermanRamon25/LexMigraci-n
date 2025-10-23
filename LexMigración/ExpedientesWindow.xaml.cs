@@ -137,19 +137,24 @@ namespace LexMigración
             doc.Blocks.Add(new Paragraph(new Run("Reporte Completo de Expediente")) { FontSize = 24, FontWeight = FontWeights.Bold, TextAlignment = TextAlignment.Center });
             doc.Blocks.Add(new Paragraph(new Run($"Identificador: {expediente.Identificador}\nCliente: {expediente.NombreCliente}\nTipo de Caso: {expediente.TipoCaso}\nFecha de Creación: {expediente.FechaCreacion:dd/MM/yyyy}")) { FontSize = 12, Margin = new Thickness(0, 20, 0, 20) });
 
-            // --- 2. SECCIÓN DE ANEXOS ---
-            var anexos = _dbService.ObtenerAnexos().Where(a => a.ExpedienteId == expediente.Identificador).ToList();
-            doc.Blocks.Add(new Paragraph(new Run("Anexos Asociados")) { FontSize = 18, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 15, 0, 5) });
-            if (anexos.Any())
+            // --- 2. SECCIÓN DE TESTIMONIO ---
+            // 🚨 CORRECCIÓN 1: Usar el método correcto del servicio: ObtenerTestimonios()
+            var testimonios = _dbService.ObtenerTestimonios().Where(a => a.ExpedienteId == expediente.Identificador).ToList();
+
+            // 💡 CORRECCIÓN 2: Actualizar el encabezado del reporte a Testimonios
+            doc.Blocks.Add(new Paragraph(new Run("Testimonios Asociados")) { FontSize = 18, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 15, 0, 5) });
+            if (testimonios.Any())
             {
-                foreach (var anexo in anexos)
+                // 'var testimonio' funciona correctamente aquí porque el tipo es List<TestimonioModel>
+                foreach (var testimonio in testimonios)
                 {
-                    doc.Blocks.Add(new Paragraph(new Run($" •  Archivo: {anexo.NombreArchivo ?? "N/A"}, Estado: {anexo.Estado}, Volumen: {anexo.Volumen}, Libro: {anexo.Libro}, Folio: {anexo.NumeroEscritura}")) { Margin = new Thickness(20, 0, 0, 5) });
+                    doc.Blocks.Add(new Paragraph(new Run($" •  Archivo: {testimonio.NombreArchivo ?? "N/A"}, Estado: {testimonio.Estado}, Volumen: {testimonio.Volumen}, Libro: {testimonio.Libro}, Folio: {testimonio.NumeroEscritura}")) { Margin = new Thickness(20, 0, 0, 5) });
                 }
             }
             else
             {
-                doc.Blocks.Add(new Paragraph(new Run("  No se encontraron anexos para este expediente.")));
+                // 💡 CORRECCIÓN 3: Actualizar el mensaje de "no encontrado"
+                doc.Blocks.Add(new Paragraph(new Run("  No se encontraron testimonios para este expediente.")));
             }
 
             // --- 3. SECCIÓN DE PROTOCOLOS ---

@@ -48,7 +48,7 @@
 
         <Border Grid.Row="1" Background="White" CornerRadius="5" Padding="20" BorderBrush="#EEE" BorderThickness="1" Margin="0,0,0,15">
             <StackPanel Orientation="Horizontal">
-                <Button Name="BtnMigrarAnexoProtocolo" Content="Migrar Anexo → Protocolo" Style="{StaticResource MigrationButtonStyle}" Click="BtnMigrarAnexoProtocolo_Click"/>
+                <Button Name="BtnMigrarTestimonioProtocolo" Content="Migrar Testimonio → Protocolo" Style="{StaticResource MigrationButtonStyle}" Click="BtnMigrarTestimonioProtocolo_Click"/>
                 <Button Name="BtnMigrarProtocoloIndice" Content="Migrar Protocolo → Índice" Style="{StaticResource MigrationButtonStyle}" Click="BtnMigrarProtocoloIndice_Click"/>
             </StackPanel>
         </Border>

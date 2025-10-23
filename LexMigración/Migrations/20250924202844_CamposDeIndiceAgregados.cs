@@ -8,7 +8,7 @@ namespace LexMigración.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Anexos",
+                name: "Testimonios",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -27,7 +27,7 @@ namespace LexMigración.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Anexos", x => x.Id);
+                    table.PrimaryKey("PK_Testimonios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,7 +105,7 @@ namespace LexMigración.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Anexos");
+                name: "Testimonios");
 
             migrationBuilder.DropTable(
                 name: "Expedientes");

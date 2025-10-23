@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-// --- *** AÑADIR ESTOS 'USING' PARA LA IMPRESIÓN *** ---
 using System.Windows.Documents;
 
 namespace LexMigración

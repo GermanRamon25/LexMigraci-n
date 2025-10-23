@@ -24,38 +24,38 @@ namespace LexMigración.Services
             }
         }
 
-        // --- Métodos para Anexos ---
-        public List<Anexo> ObtenerAnexos()
+        // --- Métodos para Testimonios ---
+        public List<TestimonioModel> ObtenerTestimonios()
         {
             using (var db = new LexMigracionContext())
             {
-                return db.Anexos.ToList();
+                return db.Testimonios.ToList();
             }
         }
 
-        public void GuardarAnexo(Anexo anexo)
+        public void GuardarTestimonio(TestimonioModel testimonio)
         {
             using (var db = new LexMigracionContext())
             {
-                db.Anexos.Add(anexo);
+                db.Testimonios.Add(testimonio);
                 db.SaveChanges();
             }
         }
 
-        public void ActualizarAnexo(Anexo anexo)
+        public void ActualizarTestimonio(TestimonioModel testimonio)
         {
             using (var db = new LexMigracionContext())
             {
-                db.Anexos.Update(anexo);
+                db.Testimonios.Update(testimonio);
                 db.SaveChanges();
             }
         }
 
-        public void EliminarAnexo(Anexo anexo)
+        public void EliminarTestimonio(TestimonioModel testimonio)
         {
             using (var db = new LexMigracionContext())
             {
-                db.Anexos.Remove(anexo);
+                db.Testimonios.Remove(testimonio);
                 db.SaveChanges();
             }
         }

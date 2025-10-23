@@ -7,7 +7,7 @@ namespace LexMigración
     public partial class MainWindow : Window
     {
         private DatabaseService _dbService;
-        private Anexo_A anexoWindow;
+        private Testimonio testimonioWindow;
         private Protocolo protocoloWindow;
         private Indice indiceWindow;
         private ExpedientesWindow expedientesWindow; // Variable para la nueva ventana
@@ -24,7 +24,7 @@ namespace LexMigración
 
         private void InitializeButtons()
         {
-            BtnAnexos.Click += BtnAnexos_Click;
+            BtnTestimonios.Click += BtnTestimonios_Click;
             BtnExpedientes.Click += BtnExpedientes_Click; // Conexión del nuevo botón
             BtnProtocolos.Click += BtnProtocolos_Click;
             BtnIndice.Click += BtnIndice_Click;
@@ -32,15 +32,15 @@ namespace LexMigración
         }
 
         // --- MÉTODOS COMPLETOS PARA LA NAVEGACIÓN ---
-        private void BtnAnexos_Click(object sender, RoutedEventArgs e)
+        private void BtnTestimonios_Click(object sender, RoutedEventArgs e)
         {
-            CloseOtherWindows("Anexo");
-            if (anexoWindow == null || !anexoWindow.IsLoaded)
+            CloseOtherWindows("Testimonio");
+            if (testimonioWindow == null || !testimonioWindow.IsLoaded)
             {
-                anexoWindow = new Anexo_A();
+                testimonioWindow = new Testimonio();
             }
-            anexoWindow.Show();
-            anexoWindow.Activate();
+            testimonioWindow.Show();
+            testimonioWindow.Activate();
         }
 
         // --- NUEVO MÉTODO PARA CERRAR SESIÓN Y VOLVER AL LOGIN ---
@@ -95,7 +95,7 @@ namespace LexMigración
 
         private void CloseOtherWindows(string except)
         {
-            if (except != "Anexo" && anexoWindow != null && anexoWindow.IsLoaded) anexoWindow.Close();
+            if (except != "Testimonio" && testimonioWindow != null && testimonioWindow.IsLoaded) testimonioWindow.Close();
             if (except != "Expedientes" && expedientesWindow != null && expedientesWindow.IsLoaded) expedientesWindow.Close();
             if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded) protocoloWindow.Close();
             if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded) indiceWindow.Close();

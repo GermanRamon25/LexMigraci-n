@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Collections.Generic;
 
+
 namespace LexMigración
 {
     public partial class Panel_Migraciones : Window
@@ -29,47 +30,46 @@ namespace LexMigración
         }
 
         // --- LÓGICA DE MIGRACIÓN 1 CORREGIDA: USA EL NÚMERO DE ESCRITURA REAL (Y NO EL TEMPORAL) ---
-        private void BtnMigrarAnexoProtocolo_Click(object sender, RoutedEventArgs e)
+        private void BtnMigrarTestimonioProtocolo_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 LstLogMigraciones.Items.Clear();
-                Log("Iniciando migración de Anexo a Protocolo...");
+                Log("Iniciando migración de Testimonio a Protocolo...");
 
-                var anexos = _dbService.ObtenerAnexos();
+                var testimonios = _dbService.ObtenerTestimonios();
                 var protocolosExistentes = _dbService.ObtenerProtocolos();
                 int migracionesExitosas = 0;
                 int migracionesOmitidas = 0;
 
-                foreach (var anexo in anexos)
+                foreach (TestimonioModel testimonio in testimonios)
                 {
-                    // 🚨 CORRECCIÓN CLAVE: Usamos el número REAL (anexo.NumeroEscritura). 
-                    // Si el usuario lo dejó vacío, usamos un fallback, NO el TEMP-ANEXO-X.
-                    string numeroEscrituraFinal = string.IsNullOrEmpty(anexo.NumeroEscritura) ?
-                        $"FALLBACK-{anexo.Id}" : anexo.NumeroEscritura;
+                    
+                    string numeroEscrituraFinal = string.IsNullOrEmpty(testimonio.NumeroEscritura) ?
+                        $"FALLBACK-{testimonio.Id}" : testimonio.NumeroEscritura;
 
                     if (protocolosExistentes.Any(p => p.NumeroEscritura == numeroEscrituraFinal))
                     {
-                        Log($"⚠️  Se omitió Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') (ya existe como escritura: {numeroEscrituraFinal}).");
+                        Log($"⚠️  Se omitió Testimonio ID:{testimonio.Id} ('{testimonio.NombreArchivo}') (ya existe como escritura: {numeroEscrituraFinal}).");
                         migracionesOmitidas++;
                         continue;
                     }
 
                     var nuevoProtocolo = new ProtocoloModel
                     {
-                        ExpedienteId = anexo.ExpedienteId,
-                        Fecha = anexo.CreatedAt,
+                        ExpedienteId = testimonio.ExpedienteId,
+                        Fecha = testimonio.CreatedAt,
                         // Usamos el número de escritura real.
                         NumeroEscritura = numeroEscrituraFinal,
-                        Extracto = !string.IsNullOrEmpty(anexo.ContenidoArchivo) ? new string(anexo.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
-                        TextoCompleto = anexo.ContenidoArchivo,
+                        Extracto = !string.IsNullOrEmpty(testimonio.ContenidoArchivo) ? new string(testimonio.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
+                        TextoCompleto = testimonio.ContenidoArchivo,
                         Firmado = false,
-                        Volumen = anexo.Volumen,
-                        Libro = anexo.Libro,
+                        Volumen = testimonio.Volumen,
+                        Libro = testimonio.Libro,
                         // Folio ya fue eliminado del modelo ProtocoloModel
                     };
                     _dbService.GuardarProtocolo(nuevoProtocolo);
-                    Log($"✔️  Anexo ID:{anexo.Id} ('{anexo.NombreArchivo}') migrado exitosamente con No. {numeroEscrituraFinal}.");
+                    Log($"✔️  Testimonio ID:{testimonio.Id} ('{testimonio.NombreArchivo}') migrado exitosamente con No. {numeroEscrituraFinal}.");
                     migracionesExitosas++;
                 }
 
