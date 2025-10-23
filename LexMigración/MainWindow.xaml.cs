@@ -10,7 +10,7 @@ namespace LexMigración
         private Testimonio testimonioWindow;
         private Protocolo protocoloWindow;
         private Indice indiceWindow;
-        private ExpedientesWindow expedientesWindow; // Variable para la nueva ventana
+        private ExpedientesWindow expedientesWindow;
 
         public MainWindow(string nombreUsuario)
         {
@@ -18,17 +18,17 @@ namespace LexMigración
             _dbService = new DatabaseService();
             InitializeButtons();
 
-            // Esto ahora funcionará porque el namespace es correcto
+           
             TxtUsuarioLogeado.Text = nombreUsuario;
         }
 
         private void InitializeButtons()
         {
             BtnTestimonios.Click += BtnTestimonios_Click;
-            BtnExpedientes.Click += BtnExpedientes_Click; // Conexión del nuevo botón
+            BtnExpedientes.Click += BtnExpedientes_Click; 
             BtnProtocolos.Click += BtnProtocolos_Click;
             BtnIndice.Click += BtnIndice_Click;
-            // La línea de BtnMigraciones.Click ha sido eliminada.
+            
         }
 
         // --- MÉTODOS COMPLETOS PARA LA NAVEGACIÓN ---
@@ -46,14 +46,14 @@ namespace LexMigración
         // --- NUEVO MÉTODO PARA CERRAR SESIÓN Y VOLVER AL LOGIN ---
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
-            // Cierra todas las ventanas secundarias abiertas
+           
             CloseOtherWindows("None");
 
-            // Crea y muestra la ventana de Login
+           
             Login loginWindow = new Login();
             loginWindow.Show();
 
-            // Cierra la ventana principal (MainWindow)
+            
             this.Close();
         }
 
@@ -91,7 +91,7 @@ namespace LexMigración
             indiceWindow.Activate();
         }
 
-        // El método BtnMigraciones_Click ha sido eliminado.
+        
 
         private void CloseOtherWindows(string except)
         {
@@ -99,7 +99,7 @@ namespace LexMigración
             if (except != "Expedientes" && expedientesWindow != null && expedientesWindow.IsLoaded) expedientesWindow.Close();
             if (except != "Protocolo" && protocoloWindow != null && protocoloWindow.IsLoaded) protocoloWindow.Close();
             if (except != "Indice" && indiceWindow != null && indiceWindow.IsLoaded) indiceWindow.Close();
-            // La condición para cerrar la ventana de migraciones ha sido eliminada.
+            
         }
 
         // --- Métodos para controlar la ventana ---

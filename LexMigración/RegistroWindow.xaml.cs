@@ -18,13 +18,13 @@ namespace LexMigración
 
         private void BtnRegistrar_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Recolectar datos del formulario
+            
             string usuario = TxtUsuario.Text.Trim();
             string contra = PwdContra.Password;
             string confirmarContra = PwdConfirmarContra.Password;
             string rol = (CmbRol.SelectedItem as ComboBoxItem)?.Content.ToString();
 
-            // 2. Validar los datos
+          
             if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contra) || string.IsNullOrEmpty(rol))
             {
                 TxtMensaje.Text = "Todos los campos son obligatorios.";
@@ -37,26 +37,26 @@ namespace LexMigración
                 return;
             }
 
-            // 3. Crear el objeto Usuario
+           
             var nuevoUsuario = new Usuario
             {
                 NombreUsuario = usuario,
-                Contrasena = contra, // En un sistema real, la contraseña debe ser encriptada
+                Contrasena = contra, 
                 Rol = rol
             };
 
-            // 4. Llamar al servicio para registrarlo
+            
             try
             {
                 string resultado = _dbService.RegistrarUsuario(nuevoUsuario);
                 if (resultado == "Éxito")
                 {
                     MessageBox.Show("Usuario registrado exitosamente. Ahora puede iniciar sesión.", "Registro Completo", MessageBoxButton.OK, MessageBoxImage.Information);
-                    this.Close(); // Cerrar la ventana de registro
+                    this.Close(); 
                 }
                 else
                 {
-                    // Mostrar el error devuelto por el servicio (ej: "El nombre de usuario ya existe")
+                    
                     TxtMensaje.Text = resultado;
                 }
             }
@@ -68,7 +68,7 @@ namespace LexMigración
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
-            this.Close(); // Simplemente cierra la ventana
+            this.Close(); 
         }
     }
 }

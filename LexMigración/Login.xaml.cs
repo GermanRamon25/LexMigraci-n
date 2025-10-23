@@ -20,7 +20,7 @@ namespace LexMigración
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             string usuario = TxtUsuario.Text.Trim();
-            // Siempre leemos la contraseña desde el PasswordBox, que estará sincronizado
+            
             string contra = PwdContra.Password;
             string rol = (CmbRol.SelectedItem as ComboBoxItem)?.Content.ToString();
 
@@ -55,19 +55,17 @@ namespace LexMigración
 
         private void BtnMostrarContra_Checked(object sender, RoutedEventArgs e)
         {
-            // Mostrar el TextBox y ocultar el PasswordBox
+            
             TxtContraVisible.Visibility = Visibility.Visible;
             PwdContra.Visibility = Visibility.Collapsed;
-            // Sincronizar el contenido
             TxtContraVisible.Text = PwdContra.Password;
         }
 
         private void BtnMostrarContra_Unchecked(object sender, RoutedEventArgs e)
         {
-            // Ocultar el TextBox y mostrar el PasswordBox
+            
             TxtContraVisible.Visibility = Visibility.Collapsed;
             PwdContra.Visibility = Visibility.Visible;
-            // Sincronizar el contenido
             PwdContra.Password = TxtContraVisible.Text;
         }
 

@@ -33,25 +33,25 @@ namespace LexMigración
             }
         }
 
-        // Archivo: LexMigración/Protocolo.xaml.cs
+        
 
         private void DgProtocolos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DgProtocolos.SelectedItem is ProtocoloModel protocolo)
             {
-                // 🚨 Se elimina TxtExtracto.Text = protocolo.Extracto;
+                
                 TxtTextoCompleto.Text = protocolo.TextoCompleto;
                 ChkFirmado.IsChecked = protocolo.Firmado;
 
-                // Si tienes campos Volumen/Libro/Folio en el XAML, aquí se cargarían.
+               
             }
             else
             {
-                // 🚨 Se elimina TxtExtracto.Clear();
+                
                 TxtTextoCompleto.Clear();
                 ChkFirmado.IsChecked = false;
 
-                // Si tienes campos Volumen/Libro/Folio en el XAML, aquí se limpiarían.
+               
             }
         }
 
@@ -59,13 +59,12 @@ namespace LexMigración
         {
             if (DgProtocolos.SelectedItem is ProtocoloModel protocoloSeleccionado)
             {
-                // 🚨 Se elimina la asignación de Extracto al modelo
-                // protocoloSeleccionado.Extracto = TxtExtracto.Text; 
+              
 
                 protocoloSeleccionado.TextoCompleto = TxtTextoCompleto.Text;
                 protocoloSeleccionado.Firmado = ChkFirmado.IsChecked ?? false;
 
-                // Si tienes código para guardar Volumen/Libro/Folio aquí, asegúrate de que se mantenga.
+                
 
                 try
                 {

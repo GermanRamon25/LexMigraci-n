@@ -27,8 +27,7 @@ namespace LexMigración
             CargarTestimonios();
         }
 
-        // --- MÉTODO DE EXTRACCIÓN DE TEXTO MEJORADO PARA PRESERVAR PÁRRAFOS (ESTÁNDAR) ---
-        // Este método siempre devuelve el contenido completo del DOCX para el registro.
+        
         private string ExtractTextFromWord(string filePath)
         {
             var textBuilder = new System.Text.StringBuilder();
@@ -36,19 +35,19 @@ namespace LexMigración
             {
                 using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filePath, false))
                 {
-                    // Itera sobre cada elemento de párrafo (<w:p>) en el cuerpo del documento.
+                    
                     foreach (var paragraph in wordDoc.MainDocumentPart.Document.Body.Elements<Wp.Paragraph>())
                     {
                         string text = paragraph.InnerText;
 
                         if (!string.IsNullOrEmpty(text.Trim()))
                         {
-                            // 🚨 CORRECCIÓN CLAVE: Agrega doble salto de línea para preservar el espaciado.
+                           
                             textBuilder.AppendLine(text);
                             textBuilder.AppendLine();
                         }
                     }
-                    // Quitar saltos de línea al inicio/fin
+                    
                     return textBuilder.ToString().Trim();
                 }
             }
@@ -74,11 +73,11 @@ namespace LexMigración
                 TxtNombreArchivo.Text = _nombreArchivoSeleccionado;
                 string extension = Path.GetExtension(dlg.FileName).ToLower();
 
-                // Usa el método mejorado para documentos .docx
+                
                 if (extension == ".txt")
                     _contenidoArchivoSeleccionado = File.ReadAllText(dlg.FileName);
                 else if (extension == ".docx")
-                    // Al registrar, llama a la función de extracción COMPLETA
+                    
                     _contenidoArchivoSeleccionado = ExtractTextFromWord(dlg.FileName);
                 else
                     _contenidoArchivoSeleccionado = null;
@@ -111,7 +110,7 @@ namespace LexMigración
 
         private void DgTestimonios_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // 🚨 CORRECCIÓN 1: Usar TestimonioModel
+            
             if (DgTestimonios.SelectedItem is TestimonioModel testimonio)
             {
                 CbExpediente.SelectedValue = testimonio.ExpedienteId;
@@ -133,7 +132,7 @@ namespace LexMigración
             }
             try
             {
-                // 🚨 CORRECCIÓN 2: Instanciar TestimonioModel
+              
                 var nuevoTestimonio = new TestimonioModel
                 {
                     ExpedienteId = CbExpediente.SelectedValue.ToString(),
@@ -143,7 +142,7 @@ namespace LexMigración
                     CreatedAt = DateTime.Today,
                     Volumen = TxtVolumen.Text,
                     Libro = TxtLibro.Text,
-                    NumeroEscritura = TxtNumeroEscritura.Text // Usamos el valor real del campo de entrada
+                    NumeroEscritura = TxtNumeroEscritura.Text 
                 };
                 _dbService.GuardarTestimonio(nuevoTestimonio);
                 MessageBox.Show("Testimonio guardado exitosamente.", "Éxito");
@@ -155,7 +154,7 @@ namespace LexMigración
 
         private void BtnActualizarContenido_Click(object sender, RoutedEventArgs e)
         {
-            // 🚨 CORRECCIÓN 3: Usar TestimonioModel
+            
             if (DgTestimonios.SelectedItem is TestimonioModel testimonioSeleccionado)
             {
                 try
@@ -171,7 +170,7 @@ namespace LexMigración
 
         private void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            // 🚨 CORRECCIÓN 4: Usar TestimonioModel
+            
             if (DgTestimonios.SelectedItem is TestimonioModel testimonioSeleccionado)
             {
                 if (MessageBox.Show($"¿Seguro que deseas eliminar el Testimonio '{testimonioSeleccionado.NombreArchivo}'?", "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
@@ -188,13 +187,13 @@ namespace LexMigración
             }
         }
 
-        // --- LÓGICA DE MIGRACIÓN CORREGIDA (APLICA FILTRO AQUÍ) ---
+        
         private void BtnMigrar_Click(object sender, RoutedEventArgs e)
         {
-            // 🚨 CORRECCIÓN 5: Usar TestimonioModel
+           
             if (DgTestimonios.SelectedItem is TestimonioModel testimonioSeleccionado)
             {
-                // 🚨 Se usa el número REAL del testimonio seleccionado 🚨
+                
                 string numeroEscrituraFinal = testimonioSeleccionado.NumeroEscritura;
 
                 if (string.IsNullOrEmpty(numeroEscrituraFinal))
@@ -203,16 +202,16 @@ namespace LexMigración
                     return;
                 }
 
-                // 1. DETERMINAR EL CONTENIDO QUE SE VA A MIGRAR
+                
                 string contenidoAMigrar = testimonioSeleccionado.ContenidoArchivo;
 
                 // Verifica si el nombre del archivo termina en "-2.docx" (cubre 2822-2.docx, 1234-2.docx, etc.)
                 if (testimonioSeleccionado.NombreArchivo != null && testimonioSeleccionado.NombreArchivo.EndsWith("-2.docx", StringComparison.OrdinalIgnoreCase))
                 {
-                    // 2. INYECTAR EL CONTENIDO FIJO Y FILTRADO SI SE CUMPLE LA CONDICIÓN
+                    
                     var customTextBuilder = new System.Text.StringBuilder();
 
-                    // Secciones extraídas de CORRECIONES EN ESTE.docx, con doble salto de línea forzado.
+                    
                     customTextBuilder.AppendLine("===ESCRITURA PÚBLICA NÚMERO (2,822) DOS MIL OCHOCIENTOS VEINTIDOS.============================================");
                     customTextBuilder.AppendLine("===VOLUMEN (V) QUINTO.= LIBRO (2) DOS.================");
                     customTextBuilder.AppendLine();
@@ -235,7 +234,7 @@ namespace LexMigración
                     contenidoAMigrar = customTextBuilder.ToString().Trim();
                 }
 
-                // 3. CONTINÚA EL PROCESO DE MIGRACIÓN USANDO LA VARIABLE 'contenidoAMigrar'
+                
 
                 MessageBoxResult confirmacion = MessageBox.Show(
           $"¿Estás seguro de que deseas migrar el testimonio para el expediente '{testimonioSeleccionado.ExpedienteId}' (No. {numeroEscrituraFinal}) a Protocolo e Índice?\n\nEsta acción no se puede deshacer.",
@@ -247,7 +246,7 @@ namespace LexMigración
                 {
                     try
                     {
-                        // Validar si ya fue migrado a Protocolo (usando el número REAL)
+                       
                         if (_dbService.ObtenerProtocolos().Any(p => p.NumeroEscritura == numeroEscrituraFinal))
                         {
                             MessageBox.Show($"Este testimonio ya fue migrado anteriormente a Protocolo con el No. {numeroEscrituraFinal}.", "Migración Omitida", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -259,9 +258,9 @@ namespace LexMigración
                         {
                             ExpedienteId = testimonioSeleccionado.ExpedienteId,
                             Fecha = testimonioSeleccionado.CreatedAt,
-                            NumeroEscritura = numeroEscrituraFinal, // ASIGNACIÓN DEL VALOR REAL
+                            NumeroEscritura = numeroEscrituraFinal, 
 
-                            // AHORA USA LA VARIABLE 'contenidoAMigrar'
+                           
                             Extracto = !string.IsNullOrEmpty(contenidoAMigrar) ? new string(contenidoAMigrar.Take(150).ToArray()) + "..." : "Sin contenido.",
                             TextoCompleto = contenidoAMigrar,
 
@@ -278,7 +277,7 @@ namespace LexMigración
 
                         var nuevoRegistroIndice = new RegistroIndice
                         {
-                            NumeroEscritura = nuevoProtocolo.NumeroEscritura, // Usa el número real
+                            NumeroEscritura = nuevoProtocolo.NumeroEscritura, 
                             Fecha = nuevoProtocolo.Fecha,
                             Otorgante = otorgante,
                             Operacion = operacion,
@@ -298,7 +297,7 @@ namespace LexMigración
             }
             else
             {
-                // Si no hay nada seleccionado
+                
                 MessageBox.Show("Por favor, selecciona un testimonio de la lista para poder migrarlo.", "Ningún Testimonio Seleccionado", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

@@ -29,7 +29,7 @@ namespace LexMigración
             LstLogMigraciones.Items.Insert(0, item);
         }
 
-        // --- LÓGICA DE MIGRACIÓN 1 CORREGIDA: USA EL NÚMERO DE ESCRITURA REAL (Y NO EL TEMPORAL) ---
+       
         private void BtnMigrarTestimonioProtocolo_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -59,14 +59,14 @@ namespace LexMigración
                     {
                         ExpedienteId = testimonio.ExpedienteId,
                         Fecha = testimonio.CreatedAt,
-                        // Usamos el número de escritura real.
+                        
                         NumeroEscritura = numeroEscrituraFinal,
                         Extracto = !string.IsNullOrEmpty(testimonio.ContenidoArchivo) ? new string(testimonio.ContenidoArchivo.Take(150).ToArray()) + "..." : "Sin contenido.",
                         TextoCompleto = testimonio.ContenidoArchivo,
                         Firmado = false,
                         Volumen = testimonio.Volumen,
                         Libro = testimonio.Libro,
-                        // Folio ya fue eliminado del modelo ProtocoloModel
+                        
                     };
                     _dbService.GuardarProtocolo(nuevoProtocolo);
                     Log($"✔️  Testimonio ID:{testimonio.Id} ('{testimonio.NombreArchivo}') migrado exitosamente con No. {numeroEscrituraFinal}.");
@@ -83,7 +83,7 @@ namespace LexMigración
             }
         }
 
-        // --- LÓGICA DE MIGRACIÓN 2: PURGA Y RECONSTRUCCIÓN DEL ÍNDICE ---
+        
         private void BtnMigrarProtocoloIndice_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -99,9 +99,7 @@ namespace LexMigración
                 int indicesEliminados = 0;
                 int migracionesExitosas = 0;
 
-                // 1. PURGA TOTAL DE DATOS TEMPORALES EN ORIGEN Y DESTINO
-
-                // Eliminamos registros Protocolo TEMPORALES de la fuente (ya no deberían crearse, pero limpiamos los antiguos).
+                
                 Log("1. Limpiando protocolos temporales de la fuente...");
                 foreach (var protocolo in protocolos.Where(p => p.NumeroEscritura != null && p.NumeroEscritura.StartsWith("TEMP-ANEXO-")).ToList())
                 {
@@ -110,7 +108,7 @@ namespace LexMigración
                 }
                 Log($"🗑️ {protocolosEliminados} protocolos temporales eliminados del origen.");
 
-                // Eliminamos TODOS los registros del Índice para reconstruir desde cero.
+                
                 Log("2. Eliminando TODOS los registros de Índice para reconstrucción...");
                 foreach (var indice in indicesExistentes)
                 {
@@ -119,11 +117,11 @@ namespace LexMigración
                 }
                 Log($"🗑️ {indicesEliminados} registros de Índice eliminados.");
 
-                // Volvemos a obtener Protocolos, ahora limpios.
+                
                 indicesExistentes = _dbService.ObtenerRegistrosIndice();
                 protocolos = _dbService.ObtenerProtocolos().ToList();
 
-                // 3. MIGRACIÓN FINAL (Protocolo → Índice)
+               
                 Log("3. Migrando Protocolos limpios al Índice...");
                 foreach (var protocolo in protocolos)
                 {

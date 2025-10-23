@@ -1,7 +1,7 @@
 ﻿using LexMigración.Models;
 using LexMigración.Services;
 using System;
-using System.Linq; // <-- Asegúrate de que este 'using' esté presente
+using System.Linq; 
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -20,7 +20,7 @@ namespace LexMigración
             CargarExpedientes();
         }
 
-        // --- (El resto de tus métodos como CargarExpedientes, Guardar, Eliminar, etc., no cambian) ---
+       
 
         private void CargarExpedientes()
         {
@@ -113,7 +113,7 @@ namespace LexMigración
                 PrintDialog printDialog = new PrintDialog();
                 if (printDialog.ShowDialog() == true)
                 {
-                    // Ahora creamos el reporte completo
+                    
                     FlowDocument doc = CrearReporteCompleto(expedienteSeleccionado);
 
                     printDialog.PrintDocument(((IDocumentPaginatorSource)doc).DocumentPaginator, $"Reporte del Expediente - {expedienteSeleccionado.Identificador}");
@@ -125,7 +125,7 @@ namespace LexMigración
             }
         }
 
-        // --- *** LÓGICA MEJORADA PARA CREAR EL REPORTE COMPLETO *** ---
+       
         private FlowDocument CrearReporteCompleto(Expediente expediente)
         {
             FlowDocument doc = new FlowDocument();
@@ -138,14 +138,14 @@ namespace LexMigración
             doc.Blocks.Add(new Paragraph(new Run($"Identificador: {expediente.Identificador}\nCliente: {expediente.NombreCliente}\nTipo de Caso: {expediente.TipoCaso}\nFecha de Creación: {expediente.FechaCreacion:dd/MM/yyyy}")) { FontSize = 12, Margin = new Thickness(0, 20, 0, 20) });
 
             // --- 2. SECCIÓN DE TESTIMONIO ---
-            // 🚨 CORRECCIÓN 1: Usar el método correcto del servicio: ObtenerTestimonios()
+           
             var testimonios = _dbService.ObtenerTestimonios().Where(a => a.ExpedienteId == expediente.Identificador).ToList();
 
-            // 💡 CORRECCIÓN 2: Actualizar el encabezado del reporte a Testimonios
+            
             doc.Blocks.Add(new Paragraph(new Run("Testimonios Asociados")) { FontSize = 18, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 15, 0, 5) });
             if (testimonios.Any())
             {
-                // 'var testimonio' funciona correctamente aquí porque el tipo es List<TestimonioModel>
+                
                 foreach (var testimonio in testimonios)
                 {
                     doc.Blocks.Add(new Paragraph(new Run($" •  Archivo: {testimonio.NombreArchivo ?? "N/A"}, Estado: {testimonio.Estado}, Volumen: {testimonio.Volumen}, Libro: {testimonio.Libro}, Folio: {testimonio.NumeroEscritura}")) { Margin = new Thickness(20, 0, 0, 5) });
@@ -153,7 +153,7 @@ namespace LexMigración
             }
             else
             {
-                // 💡 CORRECCIÓN 3: Actualizar el mensaje de "no encontrado"
+                
                 doc.Blocks.Add(new Paragraph(new Run("  No se encontraron testimonios para este expediente.")));
             }
 
